@@ -1,2 +1,0 @@
-git+https://github.com/johnsturgeon/tgfp-nfl@v2.0.1#egg=tgfp_nfl
-git+https://github.com/johnsturgeon/tgfp-lib@v1.2.0#egg=tgfp_lib
