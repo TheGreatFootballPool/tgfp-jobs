@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "tgfp-bin"
+version = "0.1.0"
+description = "Scripts to help with the running of The Great Football Pool"
+authors = ["John Sturgeon <john.sturgeon@me.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tgfp-lib = "^1.5.0"
+tgfp-nfl = "^3.3.0"
+doppler-env = "^0.3.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
