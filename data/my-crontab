@@ -1,1 +1,1 @@
-*/5 06-21 * * 0,1,4,5,6 /usr/local/bin/python /scripts/update_scores.py
+*/5 06-21 * * 0,1,4,5,6 /scripts/update_scores.sh 2>&1
