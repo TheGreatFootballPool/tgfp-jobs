@@ -2,8 +2,6 @@ services:
   jobs:
     build: .
     container_name: tgfp-bin
-    volumes:
-      - ./scripts:/scripts
     environment:
       - DOPPLER_TOKEN=<insert doppler token here>
       - DOPPLER_ENV=1

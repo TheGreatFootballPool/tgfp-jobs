@@ -8,6 +8,7 @@ RUN chmod 0644 /etc/cron.d/my-crontab
 RUN touch /var/log/cron.log
 
 COPY pyproject.toml /app
+COPY update_scores.* /app
 ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
