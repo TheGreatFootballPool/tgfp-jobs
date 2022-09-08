@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-tgfp-lib = "^1.5.0"
+tgfp-lib = "^1.6.0"
 tgfp-nfl = "^3.3.0"
 doppler-env = "^0.3.0"
 

@@ -3,7 +3,7 @@ import pprint
 from typing import List
 
 from tgfp_lib import TGFP, TGFPGame
-from tgfp_nfl import TgfpNfl, TgfpNflOdd
+from tgfp_nfl import TgfpNfl
 
 pp = pprint.PrettyPrinter(indent=4)
 tgfp = TGFP()

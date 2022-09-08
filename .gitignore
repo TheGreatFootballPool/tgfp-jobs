@@ -132,3 +132,5 @@ dmypy.json
 .idea
 games_data.json
 team_data.json
+all_games.json
+all_games_yahoo.json
