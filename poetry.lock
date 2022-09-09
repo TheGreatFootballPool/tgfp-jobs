@@ -187,7 +187,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "tgfp-lib"
-version = "1.6.0"
+version = "1.8.0"
 description = "The Great Football Pool Project"
 category = "main"
 optional = false
@@ -199,7 +199,7 @@ pytz = ">=2022.2.1,<2023.0.0"
 
 [[package]]
 name = "tgfp-nfl"
-version = "3.3.2"
+version = "5.0.0"
 description = "Python extraction of NFL scores schedule data from abstracted data source"
 category = "main"
 optional = false
@@ -213,7 +213,7 @@ python-dateutil = ">=2.8.2,<3.0.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "71726963ad8fb081abe95d6c54e8218f6fe4d254366f65a4ded2310730b2e605"
+content-hash = "a228fdb889a651aa02e7f22c53496308fc5d043f2583c203a1a1311902c12afe"
 
 [metadata.files]
 anyio = [
@@ -252,6 +252,7 @@ pip = [
     {file = "pip-22.2.2.tar.gz", hash = "sha256:3fd1929db052f056d7a998439176d3333fa1b3f6c1ad881de1885c0717608a4b"},
 ]
 pymongo = [
+    {file = "pymongo-4.2.0-cp310-cp310-macosx_10_15_universal2.whl", hash = "sha256:b9e4981a65f8500a3a46bb3a1e81b9feb45cf0b2115ad9c4f8d517326d026940"},
     {file = "pymongo-4.2.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:1c81414b706627f15e921e29ae2403aab52e33e36ed92ed989c602888d7c3b90"},
     {file = "pymongo-4.2.0-cp310-cp310-manylinux1_i686.whl", hash = "sha256:c549bb519456ee230e92f415c5b4d962094caac0fdbcc4ed22b576f66169764e"},
     {file = "pymongo-4.2.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:70216ec4c248213ae95ea499b6314c385ce01a5946c448fb22f6c8395806e740"},
@@ -344,10 +345,10 @@ sniffio = [
     {file = "sniffio-1.3.0.tar.gz", hash = "sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101"},
 ]
 tgfp-lib = [
-    {file = "tgfp-lib-1.6.0.tar.gz", hash = "sha256:5717d1727322b72e82e0b3d7f4b2fe2d5aa92c5fa58d015225c7ff2f5eced1f1"},
-    {file = "tgfp_lib-1.6.0-py3-none-any.whl", hash = "sha256:ef7378f183474aee2ce29381cd364f94c0c6e1df4eaec166934001eff6a74c25"},
+    {file = "tgfp-lib-1.8.0.tar.gz", hash = "sha256:9dbec2132d364a47be980af042df8a434acc09fcb2c046cc67465b5d3229cd2e"},
+    {file = "tgfp_lib-1.8.0-py3-none-any.whl", hash = "sha256:fad66b037fdfb1dc2f9ddb932973241527dc29f0bdbf3b1630518b9559f39ec4"},
 ]
 tgfp-nfl = [
-    {file = "tgfp-nfl-3.3.2.tar.gz", hash = "sha256:e6de957d7ca7640c1438f1bc3ccfd3e4fbeda949d4d07d942c888ca9ea205d2a"},
-    {file = "tgfp_nfl-3.3.2-py3-none-any.whl", hash = "sha256:c7c7eab9fd5e25a50690d698a709f5a489ac1e3028e757690a2f0671da052ee2"},
+    {file = "tgfp-nfl-5.0.0.tar.gz", hash = "sha256:7aed397b9c36856b66ffa20d4faced0c7b58cd089eeae4c5e429b953da2dfd16"},
+    {file = "tgfp_nfl-5.0.0-py3-none-any.whl", hash = "sha256:dfa401cb85e74f9e93883e57ae60e686ce1b009e87aa9a24d54f22fb6cbebf0e"},
 ]

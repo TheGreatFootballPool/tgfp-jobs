@@ -12,14 +12,14 @@ def main():
     tgfp = TGFP()
     week_no = tgfp.current_week()
     nfl = TgfpNfl(week_no=week_no)
-    yahoo_games = nfl.games()
+    nfl_games = nfl.games()
     all_games_are_final = True
 
-    for nfl_game in yahoo_games:
+    for nfl_game in nfl_games:
         tgfp_g = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)[0]
         # if nfl_game.status_type == "postponed":
         #     continue
-        if nfl_game.game_status_type != "STATUS_SCHEDULED":
+        if not nfl_game.is_pregame:
             print("Games are in progress")
             if tgfp_g:
                 if tgfp_g.home_team_score != int(nfl_game.total_home_points) or \
@@ -30,8 +30,8 @@ def main():
                     tgfp_g.game_status = nfl_game.game_status_type
                     print("saving a game score")
                     pretty_printer.pprint(tgfp_g.mongo_data())
-                    if nfl_game.score_is_final:
-                        print("Score is final")
+                if nfl_game.is_final:
+                    print("Score is final")
                         # bot_sender.alert_game_id_final(tgfp_g.id)
         extra_info = tgfp_g.extra_info
         now = datetime.now()
@@ -40,7 +40,7 @@ def main():
         extra_info['status_check'] = timestamp
         tgfp_g.save()
 
-        if not nfl_game.score_is_final:
+        if not nfl_game.is_final:
             all_games_are_final = False
 
     if all_games_are_final:
