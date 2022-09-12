@@ -2,7 +2,7 @@
 import pprint
 from datetime import datetime
 import pytz
-from tgfp_lib import TGFP
+from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
 
@@ -16,7 +16,7 @@ def main():
     all_games_are_final = True
 
     for nfl_game in nfl_games:
-        tgfp_g = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)[0]
+        tgfp_g: TGFPGame = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)[0]
         # if nfl_game.status_type == "postponed":
         #     continue
         if not nfl_game.is_pregame:
