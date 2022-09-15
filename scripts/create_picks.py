@@ -50,9 +50,6 @@ def main():
         pp.pprint(tgfp_game.mongo_data())
         tgfp_game.save()
         print("")
-    with open('all_games.json', 'w', encoding='utf-8') as output_file:
-        pprint.pprint(all_json, stream=output_file)
-
 
 if __name__ == "__main__":
     main()
