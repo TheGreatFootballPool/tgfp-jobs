@@ -3,7 +3,10 @@ services:
     build: .
     container_name: tgfp-bin
     environment:
-      - DOPPLER_TOKEN=<insert doppler token here>
+      - DOPPLER_TOKEN=<insert token>
       - DOPPLER_ENV=1
       - TZ=US/Pacific
     restart: unless-stopped
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data

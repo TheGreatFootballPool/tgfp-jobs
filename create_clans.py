@@ -1,7 +1,8 @@
 """ Script to create / sync clans and clan membership between discord and the Mongo DB """
-import discord
+import os
+
 from discord import Guild
-from tgfp_lib import TGFP, TGFPPlayer, TGFPClan
+from tgfp_lib import TGFP, TGFPClan
 
 import discord
 
@@ -46,10 +47,7 @@ def sync_db_roles_with_discord_guild(guild: Guild):
 
 
 def main():
-    # Dev token
-    # client.run('Nzc5MzgzODU4MDk2MjQyNzE4.GGbZ4C.SW-F9x6TpR01g0WrE6Jsg2e8sJkHY6P6zmsr6A')
-    # Production token
-    client.run('NzUzMjk5NTA3MTMwNjYzMTQ5.GpTeZe.Q883_kgBmjrZo-ztIR1LPGN-sKS83BipcoEWuA')
+    client.run(os.getenv('DISCORD_AUTH_TOKEN'))
 
 
 if __name__ == '__main__':

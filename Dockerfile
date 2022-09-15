@@ -26,4 +26,4 @@ RUN apt-get update && apt-get install -y apt-transport-https ca-certificates cur
 
 RUN crontab /etc/cron.d/my-crontab
 
-CMD cron && tail -f /var/log/cron.log
+CMD export > /.env && cron && tail -f /var/log/cron.log
