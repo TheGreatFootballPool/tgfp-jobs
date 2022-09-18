@@ -1,4 +1,6 @@
 """ This file will update all the scores in the mongo DB for the great football pool """
+import socket
+import urllib.request
 import pprint
 from typing import List
 import logging
@@ -7,6 +9,11 @@ from tgfp_nfl import TgfpNfl
 
 
 def update_win_loss():
+    try:
+        urllib.request.urlopen("https://hc-ping.com/26764645-4b82-4002-af99-48cb34b07b2f", timeout=10)
+    except socket.error as e:
+        # Log ping failure here...
+        print("Ping failed: %s" % e)
     logger = logging.getLogger('win_loss_logger')
 
     logging.basicConfig(
