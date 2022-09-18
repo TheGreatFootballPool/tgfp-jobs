@@ -65,7 +65,7 @@ def main():
     dt = datetime.now()
     day = dt.weekday()
     hour = dt.hour
-    if day in [0, 3, 4, 5]:
+    if day in [0, 3, 5, 6]:
         if 8 < hour < 22:
             start_updating_win_loss()
     send_message("The Scheduler is up and running!")
