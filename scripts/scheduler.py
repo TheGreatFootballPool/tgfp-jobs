@@ -1,6 +1,7 @@
 import time
 import schedule
 import logging
+from datetime import datetime
 
 from update_win_loss import update_win_loss as do_update
 from send_message_to_admin import send_message
@@ -57,6 +58,17 @@ def load_nfl_schedule():
 
 def main():
     load_nfl_schedule()
+    # start the schedule if we're starting up during a window
+    # 0 == Monday
+    # 3 == Thursday
+    # 4 == Saturday
+    # 5 == Sunday
+    dt = datetime.now()
+    day = dt.weekday()
+    hour = dt.hour
+    if day in [0, 3, 4, 5]:
+        if hour < 22:
+            start_updating_win_loss()
     send_message("The Scheduler is up and running!")
     while True:
         schedule.run_pending()

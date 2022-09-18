@@ -3,7 +3,7 @@ services:
     build: .
     container_name: tgfp-jobs
     environment:
-      - DOPPLER_TOKEN=dp.st.prd.4bz4NK0NY4r5mmMXnl04wKWpGgWOy8l5SdPbUkP2FNJ
+      - DOPPLER_TOKEN=[redacted]
       - DOPPLER_ENV=1
       - TZ=US/Pacific
     restart: unless-stopped
