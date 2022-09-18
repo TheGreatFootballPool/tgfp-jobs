@@ -1,12 +1,10 @@
 services:
-  jobs:
+  schedule:
     build: .
-    container_name: tgfp-bin
+    container_name: tgfp-jobs
     environment:
       - DOPPLER_TOKEN=<insert token>
       - DOPPLER_ENV=1
       - TZ=US/Pacific
     restart: unless-stopped
-    volumes:
-      - ./scripts:/scripts
-      - ./data:/data
+

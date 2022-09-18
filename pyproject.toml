@@ -1,16 +1,19 @@
 [tool.poetry]
 name = "tgfp-bin"
-version = "1.0.5"
+version = "2.0.0"
 description = "Scripts to help with the running of The Great Football Pool"
 authors = ["John Sturgeon <john.sturgeon@me.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10.5,<3.11"
 doppler-env = "^0.3.0"
 "discord.py" = "^2.0.1"
 tgfp-lib = "^1.14.1"
 tgfp-nfl = "^5.0.0"
+hikari = "^2.0.0.dev110"
+arrow = "^1.2.3"
+schedule = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 
