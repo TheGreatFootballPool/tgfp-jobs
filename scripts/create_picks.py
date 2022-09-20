@@ -19,7 +19,7 @@ def round_to(number, precision):
     return int(number / precision + correction) * precision
 
 
-def main():
+def create_picks():
     """ Runs the main method to create the picks page """
     print("Current week: %d" % week_no)
     all_json: List = []
@@ -49,7 +49,3 @@ def main():
         all_json.append(tgfp_game.mongo_data())
         pp.pprint(tgfp_game.mongo_data())
         tgfp_game.save()
-        print("")
-
-if __name__ == "__main__":
-    main()

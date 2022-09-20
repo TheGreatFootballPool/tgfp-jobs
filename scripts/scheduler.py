@@ -1,23 +1,33 @@
+import os
 import time
 import schedule
 import logging
 from datetime import datetime
+import sentry_sdk
+from sentry_sdk.integrations.logging import LoggingIntegration
 
-from update_win_loss import update_win_loss as do_update
+from update_win_loss import update_win_loss as do_update_win_loss
 from send_message_to_admin import send_message
+from create_picks import create_picks as do_create_picks
+
+sentry_logging = LoggingIntegration(
+    level=logging.INFO,        # Capture info and above as breadcrumbs
+    event_level=logging.ERROR  # Send errors as events
+)
+
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
+    integrations=[
+        sentry_logging,
+    ],
+    traces_sample_rate=1.0
+)
 
 WIN_LOSS_JOB_TAG = 'win-loss-job'
 
 START_TIME = "09:00"
 END_TIME = "22:00"
-
-logger = logging.getLogger('mylogger')
-
-logging.basicConfig(
-    filename='/var/log/scheduler.log',
-    filemode='w',
-    format='%(name)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG)
+PICKS_PAGE_TIME = "06:00"
 
 
 def start_updating_win_loss():
@@ -32,7 +42,12 @@ def stop_updating_win_loss():
 
 def update_win_loss():
     logging.info("Running 'update_win_loss'")
-    do_update()
+    do_update_win_loss()
+
+
+def create_picks():
+    logging.info("It's wednesday morning!  About to create the picks page")
+    do_create_picks()
 
 
 def load_nfl_schedule():
@@ -55,8 +70,15 @@ def load_nfl_schedule():
     schedule.every().monday.at(END_TIME).do(stop_updating_win_loss)
 
 
+def load_tgfp_tasks():
+    schedule.every().wednesday.at(PICKS_PAGE_TIME).do(create_picks)
+
+
 def main():
+    logging.info("about to load the schedule")
     load_nfl_schedule()
+    logging.info("about to load the other misc. tgfp_tasks")
+    load_tgfp_tasks()
     # start the schedule if we're starting up during a window
     # 0 == Monday
     # 3 == Thursday
