@@ -1,4 +1,5 @@
 """ Used to create the picks page """
+import urllib.request
 import pprint
 from typing import List
 
@@ -21,6 +22,10 @@ def round_to(number, precision):
 
 def create_picks():
     """ Runs the main method to create the picks page """
+    urllib.request.urlopen(
+        "https://hc-ping.com/ae09aed7-ec22-47f6-9e1a-67ab5421aec3",
+        timeout=10
+    )
     print("Current week: %d" % week_no)
     all_json: List = []
     for nfl_game in nfl_games:
