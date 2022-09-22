@@ -1,4 +1,5 @@
 """ Script will check for players who have not done their picks and 'nag' @mention them """
+import asyncio
 import datetime
 import os
 from typing import Optional, List
@@ -50,15 +51,13 @@ async def guild_available(event: hikari.GuildAvailableEvent):
                 message += f"• <@{player.discord_id}>\n"
             message += "\nYou still need to enter your picks.  Go to https://tgfp.us/picks and get 'em in!"
             message += f"\nKickoff of first game is in {kickoff_in_minutes} minutes!"
-            # await text_channel.send(content=message, user_mentions=True)
+            await text_channel.send(content=message, user_mentions=True)
+        await asyncio.sleep(2)
+        await bot.close()
 
 
-def main():
+def nag_players():
     bot.run()
 
-
 if __name__ == '__main__':
-    try:
-        bot.run()
-    except (hikari.errors.ComponentStateConflictError, hikari.errors.GatewayError) as e:
-        print(f"got a strange hikari error {e}, exiting anyway")
+    nag_players()
