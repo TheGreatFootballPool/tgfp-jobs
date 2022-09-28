@@ -8,11 +8,6 @@ from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
 pp = pprint.PrettyPrinter(indent=4)
-tgfp = TGFP()
-tgfp_teams = tgfp.teams()
-week_no = tgfp.current_week()
-nfl = TgfpNfl(week_no=week_no)
-nfl_games = nfl.games()
 
 
 def round_to(number, precision):
@@ -23,6 +18,12 @@ def round_to(number, precision):
 
 def create_picks():
     """ Runs the main method to create the picks page """
+    tgfp = TGFP()
+    tgfp_teams = tgfp.teams()
+    week_no = tgfp.current_week()
+    nfl = TgfpNfl(week_no=week_no)
+    nfl_games = nfl.games()
+
     urllib.request.urlopen(
         "https://hc-ping.com/ae09aed7-ec22-47f6-9e1a-67ab5421aec3",
         timeout=10

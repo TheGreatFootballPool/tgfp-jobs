@@ -14,20 +14,20 @@ bot: hikari.GatewayBot = hikari.GatewayBot(
     intents=hikari.Intents.ALL
 )
 
-tgfp = TGFP()
-
-game: TGFPGame
-games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
-games.sort(key=lambda x: x.start_time, reverse=True)
-game_1_start = arrow.get(games[-1].start_time)
-print(game_1_start)
-print(arrow.utcnow())
-delta: datetime.timedelta = game_1_start - arrow.utcnow()
-kickoff_in_minutes: int = round(delta.seconds/60)
-
 
 @bot.listen(hikari.GuildAvailableEvent)
 async def guild_available(event: hikari.GuildAvailableEvent):
+    tgfp = TGFP()
+
+    game: TGFPGame
+    games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
+    games.sort(key=lambda x: x.start_time, reverse=True)
+    game_1_start = arrow.get(games[-1].start_time)
+    print(game_1_start)
+    print(arrow.utcnow())
+    delta: datetime.timedelta = game_1_start - arrow.utcnow()
+    kickoff_in_minutes: int = round(delta.seconds / 60)
+
     if event.guild.name == 'The Great Football Pool':
         # first get the text channel handle
         text_channel: Optional[hikari.TextableChannel] = None
