@@ -1,0 +1,11 @@
+services:
+  tgfp-update-scores:
+    image: johnofcamas/tgfp-job-scheduler
+    environment:
+      - DOPPLER_TOKEN=$DOPPLER_TOKEN
+      - DOPPLER_ENV=1
+      - TZ=US/Pacific
+    restart: unless-stopped
+    volumes:
+      - $TGFP_BIN_HOME/update_win_loss/todo_move_scripts:/app/todo_move_scripts
+

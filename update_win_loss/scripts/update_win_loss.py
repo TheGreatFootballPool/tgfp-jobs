@@ -1,5 +1,4 @@
 """ This file will update all the scores in the mongo DB for the great football pool """
-import urllib.request
 from typing import List
 import logging
 from tgfp_lib import TGFP, TGFPGame
@@ -7,9 +6,8 @@ from tgfp_nfl import TgfpNfl
 
 
 def update_win_loss():
-    urllib.request.urlopen("https://hc-ping.com/26764645-4b82-4002-af99-48cb34b07b2f", timeout=10)
-
     tgfp = TGFP()
+    logging.basicConfig(level=logging.INFO)
     week_no = tgfp.current_week()
     nfl_data_source = TgfpNfl(week_no=week_no)
     nfl_game = nfl_data_source.games()[0]
@@ -20,12 +18,12 @@ def update_win_loss():
 Current week is: {tgfp.current_week()}'''
         )
         return
-    update_scores(tgfp, nfl_data_source)
-    update_player_win_loss(tgfp)
-    update_team_records(tgfp, nfl_data_source)
+    _update_scores(tgfp, nfl_data_source)
+    _update_player_win_loss(tgfp)
+    _update_team_records(tgfp, nfl_data_source)
 
 
-def update_scores(tgfp, nfl_data_source):
+def _update_scores(tgfp, nfl_data_source):
     """ This is the function runs the entire module. """
     nfl_games = nfl_data_source.games()
     all_games_are_final = True
@@ -54,7 +52,7 @@ def update_scores(tgfp, nfl_data_source):
         logging.info("all games are final")
 
 
-def update_player_win_loss(tgfp):
+def _update_player_win_loss(tgfp):
     """ Main function for running the entire file """
 
     active_players = tgfp.find_players(player_active=True)
@@ -67,7 +65,7 @@ def update_player_win_loss(tgfp):
             pick.save()
 
 
-def update_team_records(tgfp, nfl_data_source):
+def _update_team_records(tgfp, nfl_data_source):
     for nfl_team in nfl_data_source.teams():
         tgfp_team = tgfp.find_teams(tgfp_nfl_team_id=nfl_team.id)[0]
         tgfp_team.wins = nfl_team.wins

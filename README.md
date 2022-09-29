@@ -1,7 +1,9 @@
 # tgfp-bin
-Job runner for The Great Football Pool
+Repository containing all scripts / jobs / healthchecks, etc.. for The Great Football Pool
 
-Make sure to set the DOPPLER_TOKEN env variable in the docker compose yaml file
-Put scripts in the 'scripts' dir
-Update data/my-crontab
-log in (lo)
+each top level folder will contain a docker compose file (to be deployed to my portainer instance) 
+and complete instructions via a folder specific README
+
+The intent is that each folder will execute one function / job
+
+[update_win_loss](update_win_loss)

@@ -1,2 +1,0 @@
-0 6 * * 3 /scripts/create_picks.sh >> /var/log/cron.log 2>&1
-*/5 07-21 * * 0,1,4,5,6 /scripts/update_win_loss.sh >> /var/log/cron.log 2>&1

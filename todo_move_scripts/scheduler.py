@@ -5,24 +5,12 @@ import logging
 from datetime import datetime
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
+from include import load_schedule
 
 from update_win_loss import update_win_loss as do_update_win_loss
 from send_message_to_admin import send_message
 from create_picks import create_picks as do_create_picks
 from nag_players import nag_players as do_nag_players
-
-sentry_logging = LoggingIntegration(
-    level=logging.INFO,        # Capture info and above as breadcrumbs
-    event_level=logging.ERROR  # Send errors as events
-)
-
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
-    integrations=[
-        sentry_logging,
-    ],
-    traces_sample_rate=1.0
-)
 
 WIN_LOSS_JOB_TAG = 'win-loss-job'
 
@@ -91,12 +79,7 @@ def load_nag_tasks():
 
 
 def main():
-    logging.info("about to load the schedule")
-    load_nfl_schedule()
-    logging.info("about to load the other misc. tgfp_tasks")
-    load_tgfp_tasks()
-    logging.info("about to load nag tasks")
-    load_nag_tasks()
+    load_schedule.load()
     # start the schedule if we're starting up during a window
     # 0 == Monday
     # 3 == Thursday
@@ -108,7 +91,7 @@ def main():
     if day in [0, 3, 5, 6]:
         if 8 < hour < 22:
             start_updating_win_loss()
-    send_message("The Scheduler is up and running!")
+    logging.info("The Scheduler is up and running!")
     while True:
         schedule.run_pending()
         time.sleep(1)
