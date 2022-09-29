@@ -26,6 +26,7 @@ sentry_sdk.init(
 
 WIN_LOSS_JOB_TAG = 'win-loss-job'
 
+SUNDAY_START_TIME = "06:00"
 START_TIME = "09:00"
 END_TIME = "22:00"
 PICKS_PAGE_TIME = "06:00"
@@ -71,7 +72,7 @@ def load_nfl_schedule():
     schedule.every().saturday.at(END_TIME).do(stop_updating_win_loss)
 
     # Monitor Sunday all games throughout the day
-    schedule.every().sunday.at(START_TIME).do(start_updating_win_loss)
+    schedule.every().sunday.at(SUNDAY_START_TIME).do(start_updating_win_loss)
     schedule.every().sunday.at(END_TIME).do(stop_updating_win_loss)
 
     # Monitor Monday Night Football
