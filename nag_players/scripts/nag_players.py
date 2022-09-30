@@ -18,6 +18,9 @@ bot: hikari.GatewayBot = hikari.GatewayBot(
 logging.basicConfig(level=logging.INFO)
 
 
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'nag-players'
+
+
 @bot.listen(hikari.GuildAvailableEvent)
 async def guild_available(event: hikari.GuildAvailableEvent):
     tgfp = TGFP()
@@ -61,10 +64,7 @@ async def guild_available(event: hikari.GuildAvailableEvent):
 
 def nag_players():
     logging.info("About to nag some players")
-    urllib.request.urlopen(
-        "https://hc-ping.com/1dff5da6-5d4e-48d5-886d-e27b60aa5064",
-        timeout=10
-    )
+    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
     bot.run()
 
 if __name__ == '__main__':

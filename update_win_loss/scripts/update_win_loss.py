@@ -1,4 +1,5 @@
 """ This file will update all the scores in the mongo DB for the great football pool """
+import os
 from typing import List
 import urllib.request
 import logging
@@ -13,6 +14,9 @@ class UpdateWinLossException(Exception):
 
     def __str__(self):
         return f"Exception: {self.msg}"
+
+
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'update-win-loss-scores'
 
 
 def update_win_loss():
@@ -45,7 +49,7 @@ Current week is: {tgfp.current_week()}'''
     except UpdateWinLossException as e:
         logging.error(e)
         return
-    urllib.request.urlopen("https://hc-ping.com/26764645-4b82-4002-af99-48cb34b07b2f", timeout=10)
+    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
 
 
 def _update_scores(tgfp, nfl_data_source):

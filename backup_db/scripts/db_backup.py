@@ -20,6 +20,8 @@ CMD = [
     f"--archive={FILENAME}"
 ]
 
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'back-up-production-db'
+
 
 def db_backup():
     dt = datetime.now()
@@ -41,10 +43,8 @@ def db_backup():
     shutil.copyfile(FILENAME, monthly_file)
     shutil.copyfile(FILENAME, yearly_file)
     os.remove(FILENAME)
-    urllib.request.urlopen(
-        "https://hc-ping.com/4b181d15-e36d-44f4-b7d4-498ab03f71c7",
-        timeout=10
-    )
+
+    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
 
 
 if __name__ == '__main__':

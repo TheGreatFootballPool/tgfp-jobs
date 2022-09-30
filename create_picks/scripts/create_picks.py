@@ -1,4 +1,5 @@
 """ Used to create the picks page """
+import os
 import urllib.request
 import pprint
 import logging
@@ -18,6 +19,8 @@ class CreatePicksException(Exception):
 
 
 pp = pprint.PrettyPrinter(indent=4)
+
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'create-picks-page'
 
 
 def create_picks():
@@ -59,10 +62,7 @@ def create_picks():
         logging.info(tgfp_game.mongo_data())
         tgfp_game.save()
 
-    urllib.request.urlopen(
-        "https://hc-ping.com/ae09aed7-ec22-47f6-9e1a-67ab5421aec3",
-        timeout=10
-    )
+    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
 
 
 if __name__ == '__main__':
