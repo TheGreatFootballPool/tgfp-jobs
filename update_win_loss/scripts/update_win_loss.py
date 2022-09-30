@@ -45,7 +45,7 @@ Current week is: {tgfp.current_week()}'''
     except UpdateWinLossException as e:
         logging.error(e)
         return
-    urllib.request.urlopen("http://goshdarnedserver:3001/api/push/0GnTSJttuU?status=up&msg=OK&ping=", timeout=10)
+    urllib.request.urlopen("https://hc-ping.com/26764645-4b82-4002-af99-48cb34b07b2f", timeout=10)
 
 
 def _update_scores(tgfp, nfl_data_source):

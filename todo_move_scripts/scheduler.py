@@ -48,26 +48,6 @@ def nag_players():
     do_nag_players()
 
 
-def load_nfl_schedule():
-    """ This is the schedule of when NFL games run """
-
-    # Monitor Thursday night games
-    schedule.every().thursday.at(START_TIME).do(start_updating_win_loss)
-    schedule.every().thursday.at(END_TIME).do(stop_updating_win_loss)
-
-    # Monitor Saturday games (when they start)
-    schedule.every().saturday.at(START_TIME).do(start_updating_win_loss)
-    schedule.every().saturday.at(END_TIME).do(stop_updating_win_loss)
-
-    # Monitor Sunday all games throughout the day
-    schedule.every().sunday.at(SUNDAY_START_TIME).do(start_updating_win_loss)
-    schedule.every().sunday.at(END_TIME).do(stop_updating_win_loss)
-
-    # Monitor Monday Night Football
-    schedule.every().monday.at(START_TIME).do(start_updating_win_loss)
-    schedule.every().monday.at(END_TIME).do(stop_updating_win_loss)
-
-
 def load_tgfp_tasks():
     schedule.every().wednesday.at(PICKS_PAGE_TIME).do(create_picks)
 
