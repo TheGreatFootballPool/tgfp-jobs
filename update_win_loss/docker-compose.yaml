@@ -7,5 +7,4 @@ services:
       - TZ=US/Pacific
     restart: unless-stopped
     volumes:
-      - $TGFP_BIN_HOME/update_win_loss/todo_move_scripts:/app/todo_move_scripts
-
+      - $TGFP_BIN_HOME/update_win_loss/scripts:/app/scripts

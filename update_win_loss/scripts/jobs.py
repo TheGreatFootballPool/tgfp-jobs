@@ -25,7 +25,7 @@ THIRD_NAG_TIME = "17:10"
 
 def start_updating_win_loss():
     logging.info("🏁Starting to monitor win/loss and scores")
-    schedule.every(2).minutes.do(do_update_win_loss).tag(WIN_LOSS_JOB_TAG)
+    schedule.every(5).minutes.do(do_update_win_loss).tag(WIN_LOSS_JOB_TAG)
 
 
 def stop_updating_win_loss():

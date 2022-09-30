@@ -1,8 +1,18 @@
 """ This file will update all the scores in the mongo DB for the great football pool """
 from typing import List
+import urllib.request
 import logging
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
+
+
+class UpdateWinLossException(Exception):
+    def __init__(self, msg, *args):
+        super().__init__(args)
+        self.msg = msg
+
+    def __str__(self):
+        return f"Exception: {self.msg}"
 
 
 def update_win_loss():
@@ -18,18 +28,34 @@ def update_win_loss():
 Current week is: {tgfp.current_week()}'''
         )
         return
-    _update_scores(tgfp, nfl_data_source)
-    _update_player_win_loss(tgfp)
-    _update_team_records(tgfp, nfl_data_source)
+    try:
+        _update_scores(tgfp, nfl_data_source)
+    except UpdateWinLossException as e:
+        logging.error(e)
+        return
+
+    try:
+        _update_player_win_loss(tgfp)
+    except UpdateWinLossException as e:
+        logging.error(e)
+        return
+
+    try:
+        _update_team_records(tgfp, nfl_data_source)
+    except UpdateWinLossException as e:
+        logging.error(e)
+        return
+    urllib.request.urlopen("http://goshdarnedserver:3001/api/push/0GnTSJttuU?status=up&msg=OK&ping=", timeout=10)
 
 
 def _update_scores(tgfp, nfl_data_source):
-    """ This is the function runs the entire module. """
     nfl_games = nfl_data_source.games()
     all_games_are_final = True
 
     for nfl_game in nfl_games:
         tgfp_g: TGFPGame = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)[0]
+        if not tgfp_g:
+            raise UpdateWinLossException("_update_scores: didn't find any games")
         if not nfl_game.is_pregame:
             logging.info("Games are in progress")
             if tgfp_g:
@@ -53,8 +79,6 @@ def _update_scores(tgfp, nfl_data_source):
 
 
 def _update_player_win_loss(tgfp):
-    """ Main function for running the entire file """
-
     active_players = tgfp.find_players(player_active=True)
 
     for player in active_players:
