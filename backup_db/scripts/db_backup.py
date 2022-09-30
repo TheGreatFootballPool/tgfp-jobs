@@ -8,13 +8,13 @@ from datetime import datetime
 from subprocess import check_output, CalledProcessError
 
 MONGO_BACKUP_URI = os.getenv('MONGO_BACKUP_URI')
-MONGO_BACKUP_DIR = os.getenv('MONGO_BACKUP_DIR')
+BACKUP_DIR = os.getenv('BACKUP_DIR')
 
 logging.basicConfig(level=logging.INFO)
 dt = datetime.now()
 month = dt.month
 
-FILENAME = f"{MONGO_BACKUP_DIR}/tgfp"
+FILENAME = f"{BACKUP_DIR}/tgfp"
 HOURLY_FILE = f"{FILENAME}.hourly.{dt.hour}.gz"
 DAILY_FILE = f"{FILENAME}.daily.{dt.day}.gz"
 MONTHLY_FILE = f"{FILENAME}.monthly.{dt.month}.gz"
