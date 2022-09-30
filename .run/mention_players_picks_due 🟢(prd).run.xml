@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="mention_players_picks_due 🟢(prd)" type="PythonConfigurationType" factoryName="Python">
-    <module name="tgfp-bin" />
+    <module name="tgfp" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
