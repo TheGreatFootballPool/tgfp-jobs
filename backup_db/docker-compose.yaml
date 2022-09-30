@@ -1,0 +1,15 @@
+services:
+  tgfp-db-backup-prd:
+    image: johnofcamas/tgfp-job-scheduler
+    environment:
+      - DOPPLER_TOKEN=$DOPPLER_TOKEN
+      - DOPPLER_ENV=1
+      - TZ=US/Pacific
+      - BACKUP_DIR=/backup
+    restart: unless-stopped
+    volumes:
+      - $TGFP_HOME/backup_db/scripts:/app/scripts
+      - $MONGO_BACKUP_DIR:/backup
+    depends_on:
+      tgfp-mongodb-prd:
+        condition: service_healthy
