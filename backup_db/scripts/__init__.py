@@ -1,4 +1,6 @@
-from .db_backup import db_backup
+""" Module for backing up the database """
+from .db_backup import back_up_db
+
 __all__ = [
-    "db_backup"
+    "back_up_db"
 ]

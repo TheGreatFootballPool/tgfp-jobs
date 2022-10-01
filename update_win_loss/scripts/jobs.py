@@ -1,9 +1,9 @@
 """ Starting point, this is loaded first by the scheduler """
 import logging
 import os
+from datetime import datetime
 import schedule
 import sentry_sdk
-from datetime import datetime
 
 from . import update_win_loss
 sentry_sdk.init(
@@ -23,6 +23,7 @@ SECOND_NAG_TIME = "16:50"
 THIRD_NAG_TIME = "17:10"
 
 
+# pylint: disable=missing-function-docstring
 def start_updating_win_loss():
     logging.info("🏁Starting to monitor win/loss and scores")
     schedule.every(5).minutes.do(do_update_win_loss).tag(WIN_LOSS_JOB_TAG)

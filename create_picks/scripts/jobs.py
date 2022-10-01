@@ -3,7 +3,6 @@ import logging
 import os
 import schedule
 import sentry_sdk
-from datetime import datetime
 
 from . import create_picks
 sentry_sdk.init(
@@ -16,5 +15,6 @@ PICKS_PAGE_TIME = "06:00"
 
 
 def load():
+    """ Load the schedule """
     logging.info("loading Create Picks schedule")
     schedule.every().wednesday.at(PICKS_PAGE_TIME).do(create_picks)

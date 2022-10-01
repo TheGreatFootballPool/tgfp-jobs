@@ -1,9 +1,11 @@
 """ Script will listen for messages and respond with smart things """
 import os
-
+import urllib.request
+import logging
 import sentry_sdk
 import hikari
 import lightbulb
+from lightbulb.ext import tasks
 from tgfp_lib import TGFP, TGFPPlayer
 from scripts import get_help, get_game_care_scores_for_player, formatted_care, pick_detail_embed
 
@@ -16,6 +18,8 @@ bot: lightbulb.BotApp = lightbulb.BotApp(
     intents=hikari.Intents.ALL,
     banner=None
 )
+
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'tgfp-bot'
 
 
 @bot.command
@@ -71,8 +75,16 @@ async def pick_detail(ctx: lightbulb.Context) -> None:
         await ctx.respond(pick_detail_embed(scores, tgfp))
 
 
+@tasks.task(m=15)
+async def ping_healthchecks():
+    """ Ping healthchecks"""
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+        logging.info(response.read())
+
+
 def main():
     """ Main function """
+    ping_healthchecks.start()
     bot.run()
 
 

@@ -7,6 +7,8 @@ from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
 
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 class UpdateWinLossException(Exception):
     def __init__(self, msg, *args):
         super().__init__(args)
@@ -28,28 +30,28 @@ def update_win_loss():
     games: List[TGFPGame] = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)
     if not games:
         logging.warning(
-            f'''No games yet, this happens if you haven't created the picks page for the current week
-Current week is: {tgfp.current_week()}'''
-        )
+            "No games yet, this happens if you haven't created the picks \
+            page for the current week Current week is: %s", tgfp.current_week())
         return
     try:
         _update_scores(tgfp, nfl_data_source)
-    except UpdateWinLossException as e:
-        logging.error(e)
+    except UpdateWinLossException as exception:
+        logging.error(exception)
         return
 
     try:
         _update_player_win_loss(tgfp)
-    except UpdateWinLossException as e:
-        logging.error(e)
+    except UpdateWinLossException as exception:
+        logging.error(exception)
         return
 
     try:
         _update_team_records(tgfp, nfl_data_source)
-    except UpdateWinLossException as e:
-        logging.error(e)
+    except UpdateWinLossException as exception:
+        logging.error(exception)
         return
-    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+        logging.info(response.read())
 
 
 def _update_scores(tgfp, nfl_data_source):
@@ -86,7 +88,7 @@ def _update_player_win_loss(tgfp):
     active_players = tgfp.find_players(player_active=True)
 
     for player in active_players:
-        logging.info("Working on %s" % player.nick_name)
+        logging.info("Working on %s", player.nick_name)
         picks = tgfp.find_picks(player_id=player.id)
         for pick in picks:
             pick.load_record()

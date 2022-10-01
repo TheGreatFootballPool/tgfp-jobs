@@ -23,9 +23,9 @@ HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'nag-players'
 
 @bot.listen(hikari.GuildAvailableEvent)
 async def guild_available(event: hikari.GuildAvailableEvent):
+    """ Run when guid is available """
     tgfp = TGFP()
 
-    game: TGFPGame
     games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
     games.sort(key=lambda x: x.start_time, reverse=True)
     game_1_start = arrow.get(games[-1].start_time)
@@ -55,7 +55,8 @@ async def guild_available(event: hikari.GuildAvailableEvent):
             message = "This is the TGFP NagBot with a friendly reminder to the following:\n"
             for player in late_players:
                 message += f"• <@{player.discord_id}>\n"
-            message += "\nYou still need to enter your picks.  Go to https://tgfp.us/picks and get 'em in!"
+            message += "\nYou still need to enter your picks."
+            message += " Go to https://tgfp.us/picks and get 'em in!"
             message += f"\nKickoff of first game is in {kickoff_in_minutes} minutes!"
             await text_channel.send(content=message, user_mentions=True)
         await asyncio.sleep(2)
@@ -63,8 +64,10 @@ async def guild_available(event: hikari.GuildAvailableEvent):
 
 
 def nag_players():
+    """ Nag Players bot run"""
     logging.info("About to nag some players")
-    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+        logging.info(response.read())
     bot.run()
 
 if __name__ == '__main__':

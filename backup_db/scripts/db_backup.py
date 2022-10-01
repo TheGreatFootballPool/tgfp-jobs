@@ -23,12 +23,13 @@ CMD = [
 HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'back-up-production-db'
 
 
-def db_backup():
-    dt = datetime.now()
-    hourly_file = f"{FILENAME}.hourly.{dt.hour}.gz"
-    daily_file = f"{FILENAME}.daily.{dt.day}.gz"
-    monthly_file = f"{FILENAME}.monthly.{dt.month}.gz"
-    yearly_file = f"{FILENAME}.yearly.{dt.year}.gz"
+def back_up_db():
+    """ Back up the database """
+    now = datetime.now()
+    hourly_file = f"{FILENAME}.hourly.{now.hour}.gz"
+    daily_file = f"{FILENAME}.daily.{now.day}.gz"
+    monthly_file = f"{FILENAME}.monthly.{now.month}.gz"
+    yearly_file = f"{FILENAME}.yearly.{now.year}.gz"
 
     logging.info("About to dump mongo DB using command")
     try:
@@ -44,8 +45,9 @@ def db_backup():
     shutil.copyfile(FILENAME, yearly_file)
     os.remove(FILENAME)
 
-    urllib.request.urlopen(HEALTHCHECK_URL, timeout=10)
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+        logging.info(response.read())
 
 
 if __name__ == '__main__':
-    db_backup()
+    back_up_db()
