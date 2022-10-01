@@ -78,12 +78,15 @@ async def pick_detail(ctx: lightbulb.Context) -> None:
 @tasks.task(m=15)
 async def ping_healthchecks():
     """ Ping healthchecks"""
+    logging.info("About to ping healthchecks")
     with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
         logging.info(response.read())
 
 
 def main():
     """ Main function """
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+        logging.info(response.read())
     ping_healthchecks.start()
     bot.run()
 
