@@ -1,5 +1,5 @@
 services:
-  tgfp-update-scores:
+  tgfp-create-picks:
     image: johnofcamas/tgfp-job-scheduler
     environment:
       - DOPPLER_TOKEN=$DOPPLER_TOKEN
@@ -7,7 +7,7 @@ services:
       - TZ=US/Pacific
     restart: unless-stopped
     volumes:
-      - $TGFP_HOME/update_win_loss/scripts:/app/scripts
+      - $TGFP_HOME/create_picks/scripts:/app/scripts
     depends_on:
       tgfp-mongodb-prd:
         condition: service_healthy
