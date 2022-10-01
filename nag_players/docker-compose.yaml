@@ -1,6 +1,6 @@
 services:
   tgfp-nag-players:
-    image: johnofcamas/tgfp-job-scheduler
+    image: johnofcamas/tgfp-job-runner
     environment:
       - DOPPLER_TOKEN=$DOPPLER_TOKEN
       - DOPPLER_ENV=1

@@ -1,15 +1,15 @@
 services:
-  tgfp-db-backup-prd:
+  tgfp-create-picks:
     image: johnofcamas/tgfp-job-runner
     environment:
       - DOPPLER_TOKEN=$DOPPLER_TOKEN
       - DOPPLER_ENV=1
       - TZ=US/Pacific
-      - BACKUP_DIR=/backup
     restart: unless-stopped
+    command: "bot.py"
     volumes:
-      - $TGFP_HOME/backup_db/scripts:/app/scripts
-      - $MONGO_BACKUP_DIR:/backup
+      - $TGFP_HOME/bot/scripts:/app/scripts
+      - $TGFP_HOME/bot/bot.py:/app/bot.py
     depends_on:
       tgfp-mongodb-prd:
         condition: service_healthy
