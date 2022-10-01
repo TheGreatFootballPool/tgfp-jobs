@@ -61,7 +61,7 @@ def add_pick_detail_command_to_embed(embed: hikari.Embed, add_description_to_fie
     else:
         field_description = f"{title}\n{description}\n"
     embed.add_field(
-        name="`/do_i_care`",
+        name="`/pick_detail`",
         value=f"""{field_description}
     Goes through each game displaying the current game status
     • **Line**: which team is favored

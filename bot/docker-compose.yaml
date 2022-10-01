@@ -1,6 +1,7 @@
 services:
-  tgfp-create-picks:
+  tgfp-bot:
     image: johnofcamas/tgfp-job-runner
+    container_name: tgfp-bot
     environment:
       - DOPPLER_TOKEN=$DOPPLER_TOKEN
       - DOPPLER_ENV=1
