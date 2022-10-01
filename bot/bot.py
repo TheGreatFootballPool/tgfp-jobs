@@ -18,6 +18,7 @@ bot: lightbulb.BotApp = lightbulb.BotApp(
     intents=hikari.Intents.ALL,
     banner=None
 )
+tasks.load(bot)
 
 HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'tgfp-bot'
 
