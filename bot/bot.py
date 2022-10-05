@@ -11,6 +11,7 @@ from scripts import get_help, get_game_care_scores_for_player, formatted_care, p
 
 sentry_sdk.init(
     dsn=os.getenv('SENTRY_DSN_TGFP_BOT'),
+    environment=os.getenv('SENTRY_ENVIRONMENT'),
     traces_sample_rate=1.0
 )
 bot: lightbulb.BotApp = lightbulb.BotApp(

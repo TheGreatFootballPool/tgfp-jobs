@@ -5,8 +5,10 @@ import schedule
 import sentry_sdk
 
 from . import create_picks
+
 sentry_sdk.init(
     dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
+    environment=os.getenv('SENTRY_ENVIRONMENT'),
     traces_sample_rate=1.0
 )
 logging.basicConfig(level=logging.INFO)

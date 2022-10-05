@@ -11,6 +11,7 @@ THIRD_NAG_TIME = "17:10"
 
 sentry_sdk.init(
     dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
+    environment=os.getenv('SENTRY_ENVIRONMENT'),
     traces_sample_rate=1.0
 )
 logging.basicConfig(level=logging.INFO)
