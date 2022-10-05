@@ -15,4 +15,5 @@ logging.basicConfig(level=logging.INFO)
 def load():
     """ Load the schedule """
     logging.info("Loading the db backup schedule")
+    back_up_db()  # Do once on startup
     schedule.every(30).minutes.do(back_up_db)
