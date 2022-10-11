@@ -32,12 +32,12 @@ def update_win_loss():
         logging.warning(
             "No games yet, this happens if you haven't created the picks \
             page for the current week Current week is: %s", tgfp.current_week())
-        return
-    try:
-        _update_scores(tgfp, nfl_data_source)
-    except UpdateWinLossException as exception:
-        logging.error(exception)
-        return
+    else:
+        try:
+            _update_scores(tgfp, nfl_data_source)
+        except UpdateWinLossException as exception:
+            logging.error(exception)
+            return
 
     try:
         _update_player_win_loss(tgfp)
