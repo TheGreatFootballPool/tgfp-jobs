@@ -4,7 +4,7 @@ import urllib.request
 import pprint
 import logging
 from typing import List
-
+import sentry_sdk
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
@@ -69,4 +69,11 @@ def create_picks():
 
 
 if __name__ == '__main__':
+
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
+        environment=os.getenv('SENTRY_ENVIRONMENT'),
+        traces_sample_rate=1.0
+    )
+
     create_picks()

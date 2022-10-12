@@ -16,7 +16,7 @@ multidict = ">=4.5,<7.0"
 yarl = ">=1.0,<2.0"
 
 [package.extras]
-speedups = ["aiodns", "brotli", "cchardet"]
+speedups = ["Brotli", "aiodns", "cchardet"]
 
 [[package]]
 name = "aiosignal"
@@ -89,7 +89,7 @@ python-versions = ">=3.5"
 dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
 docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
 tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "beanie"
@@ -123,7 +123,7 @@ optional = false
 python-versions = ">=3.6.0"
 
 [package.extras]
-unicode_backport = ["unicodedata2"]
+unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
@@ -178,6 +178,7 @@ optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
+pip = "*"
 python-dotenv = "*"
 
 [package.extras]
@@ -287,9 +288,9 @@ python-versions = ">=3.6.1,<4.0"
 
 [package.extras]
 colors = ["colorama (>=0.4.3,<0.5.0)"]
-pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
+pipfile-deprecated-finder = ["pipreqs", "requirementslib"]
 plugins = ["setuptools"]
-requirements_deprecated_finder = ["pip-api", "pipreqs"]
+requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "lazy-object-proxy"
@@ -342,6 +343,14 @@ description = "1:1 mapping collection type"
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "pip"
+version = "22.2.2"
+description = "The PyPA recommended tool for installing Python packages."
+category = "main"
+optional = false
+python-versions = ">=3.7"
 
 [[package]]
 name = "platformdirs"
@@ -484,7 +493,7 @@ falcon = ["falcon (>=1.4)"]
 fastapi = ["fastapi (>=0.79.0)"]
 flask = ["blinker (>=1.1)", "flask (>=0.11)"]
 httpx = ["httpx (>=0.16.0)"]
-pure_eval = ["asttokens", "executing", "pure-eval"]
+pure-eval = ["asttokens", "executing", "pure-eval"]
 pyspark = ["pyspark (>=2.4.4)"]
 quart = ["blinker (>=1.1)", "quart (>=0.16.1)"]
 rq = ["rq (>=0.6)"]
@@ -524,7 +533,7 @@ pytz = ">=2022.2.1,<2023.0.0"
 
 [[package]]
 name = "tgfp-nfl"
-version = "5.0.0"
+version = "5.0.2"
 description = "Python extraction of NFL scores schedule data from abstracted data source"
 category = "main"
 optional = false
@@ -603,7 +612,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10.5,<3.11"
-content-hash = "0fdb2e78c5a564c2176cb51374410e6ba956e35b7ee52e3a9195ccb052714ef9"
+content-hash = "d4b9239d866c1835d82db0294e4730fe66c35cf41402835dcc8120f634a0e248"
 
 [metadata.files]
 aiohttp = [
@@ -951,6 +960,10 @@ multidict = [
 onetoonemap = [
     {file = "onetoonemap-1.0.0.tar.gz", hash = "sha256:9b739c574f9dffb927e5c21e9c9fe90a29f4b94103cd3d73cdf9c3cb286852b7"},
 ]
+pip = [
+    {file = "pip-22.2.2-py3-none-any.whl", hash = "sha256:b61a374b5bc40a6e982426aede40c9b5a08ff20e640f5b56977f4f91fed1e39a"},
+    {file = "pip-22.2.2.tar.gz", hash = "sha256:3fd1929db052f056d7a998439176d3333fa1b3f6c1ad881de1885c0717608a4b"},
+]
 platformdirs = [
     {file = "platformdirs-2.5.2-py3-none-any.whl", hash = "sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788"},
     {file = "platformdirs-2.5.2.tar.gz", hash = "sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19"},
@@ -1103,8 +1116,8 @@ tgfp-lib = [
     {file = "tgfp_lib-1.15.0-py3-none-any.whl", hash = "sha256:69804eaa26ebaec05dbe5bb56caca1828c56380a0f5c7d197b72e2f693d1f505"},
 ]
 tgfp-nfl = [
-    {file = "tgfp-nfl-5.0.0.tar.gz", hash = "sha256:7aed397b9c36856b66ffa20d4faced0c7b58cd089eeae4c5e429b953da2dfd16"},
-    {file = "tgfp_nfl-5.0.0-py3-none-any.whl", hash = "sha256:dfa401cb85e74f9e93883e57ae60e686ce1b009e87aa9a24d54f22fb6cbebf0e"},
+    {file = "tgfp_nfl-5.0.2-py3-none-any.whl", hash = "sha256:1af3180aab063dca3f0a0e1dcc3d1f6b4aed15f3a8a4a329bdf1518f88de3f9e"},
+    {file = "tgfp_nfl-5.0.2.tar.gz", hash = "sha256:6bb45280fe521d09f9e711e008286325ec1de51c6fad5c850b51023f49c3ece3"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
