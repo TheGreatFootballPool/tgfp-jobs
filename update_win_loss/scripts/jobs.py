@@ -62,4 +62,3 @@ def load():
     if day in [0, 3, 5, 6]:
         if 8 < hour < 22:
             start_updating_win_loss()
-

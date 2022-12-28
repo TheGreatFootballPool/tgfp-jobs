@@ -6,11 +6,9 @@ services:
     environment:
       - TZ=US/Pacific
     volumes:
-      - $TGFP_HOME/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - tgfp_web_certbot_conf:/etc/letsencrypt
-      - tgfp_web_certbot_www:/var/www/certbot
+      - $TGFP_HOME/nginx/conf:/etc/nginx/conf.d
+      - $TGFP_HOME/nginx/cloudflare:/etc/cloudflare_certs
     ports:
-      - "80:80"
-      - "443:443"
+      - "7443:443"
     depends_on:
       - tgfp-web
