@@ -20,7 +20,7 @@ CMD = [
     f"--archive={FILENAME}"
 ]
 
-HEALTHCHECK_URL_DB_BACKUP = os.getenv('HEALTHCHECK_URL_DB_BACKUP') + 'back-up-production-db'
+HEALTHCHECK_BASE_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'back-up-production-db'
 
 
 def back_up_db():
