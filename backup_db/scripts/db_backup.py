@@ -9,12 +9,22 @@ from subprocess import check_output, CalledProcessError
 
 MONGO_URI = os.getenv('MONGO_URI')
 BACKUP_DIR = os.getenv('BACKUP_DIR')
+MONGO_INITDB_ROOT_USERNAME = os.getenv('MONGO_INITDB_ROOT_USERNAME')
+MONGO_INITDB_ROOT_PASSWORD = os.getenv('MONGO_INITDB_ROOT_PASSWORD')
+MONGO_HOST = os.getenv('MONGO_HOST')
+MONGO_PORT = os.getenv('MONGO_PORT')
 
 logging.basicConfig(level=logging.INFO)
 
 FILENAME = f"{BACKUP_DIR}/tgfp"
 CMD = [
     "mongodump",
+    "--username",
+    MONGO_INITDB_ROOT_USERNAME,
+    "--password",
+    MONGO_INITDB_ROOT_PASSWORD,
+    "--host",
+    f"{MONGO_HOST}:{MONGO_PORT}",
     f"--uri={MONGO_URI}",
     "--gzip",
     f"--archive={FILENAME}"
