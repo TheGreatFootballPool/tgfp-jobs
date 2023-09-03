@@ -25,7 +25,6 @@ CMD = [
     MONGO_INITDB_ROOT_PASSWORD,
     "--host",
     f"{MONGO_HOST}:{MONGO_PORT}",
-    f"--uri={MONGO_URI}",
     "--gzip",
     f"--archive={FILENAME}"
 ]
