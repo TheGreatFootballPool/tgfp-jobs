@@ -45,7 +45,7 @@ def back_up_db():
     shutil.copyfile(FILENAME, yearly_file)
     os.remove(FILENAME)
 
-    with urllib.request.urlopen(HEALTHCHECK_URL_DB_BACKUP, timeout=10) as response:
+    with urllib.request.urlopen(HEALTHCHECK_BASE_URL, timeout=10) as response:
         logging.info(response.read())
 
 
