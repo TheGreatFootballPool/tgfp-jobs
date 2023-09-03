@@ -7,7 +7,7 @@ import shutil
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
 
-MONGO_BACKUP_URI = os.getenv('MONGO_BACKUP_URI')
+MONGO_URI = os.getenv('MONGO_URI')
 BACKUP_DIR = os.getenv('BACKUP_DIR')
 
 logging.basicConfig(level=logging.INFO)
@@ -15,12 +15,12 @@ logging.basicConfig(level=logging.INFO)
 FILENAME = f"{BACKUP_DIR}/tgfp"
 CMD = [
     "mongodump",
-    f"--uri={MONGO_BACKUP_URI}",
+    f"--uri={MONGO_URI}",
     "--gzip",
     f"--archive={FILENAME}"
 ]
 
-HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'back-up-production-db'
+HEALTHCHECK_URL_DB_BACKUP = os.getenv('HEALTHCHECK_URL_DB_BACKUP') + 'back-up-production-db'
 
 
 def back_up_db():
@@ -45,7 +45,7 @@ def back_up_db():
     shutil.copyfile(FILENAME, yearly_file)
     os.remove(FILENAME)
 
-    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+    with urllib.request.urlopen(HEALTHCHECK_URL_DB_BACKUP, timeout=10) as response:
         logging.info(response.read())
 
 

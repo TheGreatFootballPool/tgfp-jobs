@@ -520,7 +520,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "tgfp-lib"
-version = "1.15.0"
+version = "1.15.1"
 description = "The Great Football Pool Project"
 category = "main"
 optional = false
@@ -533,7 +533,7 @@ pytz = ">=2022.2.1,<2023.0.0"
 
 [[package]]
 name = "tgfp-nfl"
-version = "5.1.2"
+version = "5.2.0"
 description = "Python extraction of NFL scores schedule data from abstracted data source"
 category = "main"
 optional = false
@@ -612,7 +612,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10.5,<3.11"
-content-hash = "e2f579097de33cd6a4ae425e036d4ba10a04c069c3bd129236d14971a9bd70be"
+content-hash = "12d8950eb9e9246aec41a9628d1050db1a30fffe5e9d6a9efa6abecb14d42f59"
 
 [metadata.files]
 aiohttp = [
@@ -1112,12 +1112,12 @@ sniffio = [
     {file = "sniffio-1.3.0.tar.gz", hash = "sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101"},
 ]
 tgfp-lib = [
-    {file = "tgfp-lib-1.15.0.tar.gz", hash = "sha256:9f25dd06fff5a68bbe945dbe2d4840dfb849ebf8d0fbf44e2b37f1f325c19466"},
-    {file = "tgfp_lib-1.15.0-py3-none-any.whl", hash = "sha256:69804eaa26ebaec05dbe5bb56caca1828c56380a0f5c7d197b72e2f693d1f505"},
+    {file = "tgfp_lib-1.15.1-py3-none-any.whl", hash = "sha256:b4e6a0c130c4735b1bbec53696b0ab8a85f62440b82eb9498132f450f4e43d87"},
+    {file = "tgfp_lib-1.15.1.tar.gz", hash = "sha256:591dba6ac3263116a5682e10d87705c32ffd0bb24bbd91f5a34edf29f3f7be68"},
 ]
 tgfp-nfl = [
-    {file = "tgfp_nfl-5.1.2-py3-none-any.whl", hash = "sha256:8dfde0849d9fa35be62dfd6f2ccb81aaef06a3c0e9a25832acb0995f7a235966"},
-    {file = "tgfp_nfl-5.1.2.tar.gz", hash = "sha256:77a2d0114e01685fbb34c7d24797140627a9d495a393549065b115555c9a5a56"},
+    {file = "tgfp_nfl-5.2.0-py3-none-any.whl", hash = "sha256:ada5eb816dcc8b541d92e705702ffeadd1bb5370771b0d89bfb9676c55717707"},
+    {file = "tgfp_nfl-5.2.0.tar.gz", hash = "sha256:ce1ea9acac5d0b6e8effe41daa3526a6be2b59bab5dc5aa7d00134017e9ff228"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
