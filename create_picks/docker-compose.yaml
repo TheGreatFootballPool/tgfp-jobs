@@ -3,12 +3,13 @@ services:
     image: johnofcamas/tgfp-job-runner
     container_name: tgfp-create-picks
     environment:
-      - DOPPLER_TOKEN=$DOPPLER_TOKEN
-      - DOPPLER_ENV=1
-      - TZ=US/Pacific
+      - TZ
+      - HEALTHCHECK_BASE_URL
+      - CREATE_PICKS_PAGE_TIME
+      - MONGO_URI
     restart: unless-stopped
     volumes:
       - $TGFP_HOME/create_picks/scripts:/app/scripts
     depends_on:
-      tgfp-mongodb-prd:
-        condition: service_healthy
+      tgfp-mongodb:
+        condition: service_started

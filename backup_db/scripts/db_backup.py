@@ -29,7 +29,7 @@ CMD = [
     f"--archive={FILENAME}"
 ]
 
-HEALTHCHECK_BASE_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'back-up-production-db'
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'back-up-production-db'
 
 
 def back_up_db():
@@ -54,7 +54,7 @@ def back_up_db():
     shutil.copyfile(FILENAME, yearly_file)
     os.remove(FILENAME)
 
-    with urllib.request.urlopen(HEALTHCHECK_BASE_URL, timeout=10) as response:
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
         logging.info(response.read())
 
 

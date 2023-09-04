@@ -4,7 +4,6 @@ import urllib.request
 import pprint
 import logging
 from typing import List
-import sentry_sdk
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
@@ -21,12 +20,13 @@ class CreatePicksException(Exception):
 
 pp = pprint.PrettyPrinter(indent=4)
 
-HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'create-picks-page'
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'create-picks-page'
+MONGO_URI = os.getenv('MONGO_URI')
 
 
 def create_picks():
     """ Runs the main method to create the picks page """
-    tgfp = TGFP()
+    tgfp = TGFP(MONGO_URI)
     tgfp_teams = tgfp.teams()
     week_no = tgfp.current_week()
     nfl = TgfpNfl(week_no=week_no)
@@ -69,11 +69,4 @@ def create_picks():
 
 
 if __name__ == '__main__':
-
-    sentry_sdk.init(
-        dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
-        environment=os.getenv('SENTRY_ENVIRONMENT'),
-        traces_sample_rate=1.0
-    )
-
     create_picks()

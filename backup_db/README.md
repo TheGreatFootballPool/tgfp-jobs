@@ -10,12 +10,5 @@ Backs up the production database and creates a rotated backup file.
 3. git fetch
 4. git pull --rebase
 
-Add the service in the [docker-compose.yaml](docker-compose.yaml)
-Add the following env variables to the stack
-```dotenv
-TGFP_HOME
-TZ=US/Pacific
-MONGO_BACKUP_DIR
-MONGO_URI
-HEALTHCHECK_BASE_URL
-```
+Add the service in the [docker-compose.yaml](docker-compose.yaml) to the Portainer Stack
+Add the variables listed in the docker compose file to the Portainer Stack
