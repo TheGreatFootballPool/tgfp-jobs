@@ -1,7 +1,6 @@
 """ Used to create the picks page """
 import os
 import urllib.request
-import pprint
 import logging
 from typing import List
 from tgfp_lib import TGFP, TGFPGame
@@ -17,8 +16,6 @@ class CreatePicksException(Exception):
     def __str__(self):
         return f"Exception: {self.msg}"
 
-
-pp = pprint.PrettyPrinter(indent=4)
 
 HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'create-picks-page'
 MONGO_URI = os.getenv('MONGO_URI')

@@ -1,16 +1,17 @@
 """ Starting point, this is loaded first by the scheduler """
 import os
 import logging
-import schedule
+from rocketry import Rocketry
 
 from . import create_picks
 
 logging.basicConfig(level=logging.INFO)
+app = Rocketry()
 
-CREATE_PICKS_PAGE_TIME = os.getenv('CREATE_PICKS_PAGE_TIME')
+SCHEDULE = os.getenv('SCHEDULE')
 
 
-def load():
-    """ Load the schedule """
-    logging.info("loading Create Picks schedule")
-    schedule.every().wednesday.at(CREATE_PICKS_PAGE_TIME).do(create_picks)
+@app.task(SCHEDULE)
+def create_picks_page():
+    """ Creates the picks page on the given schedule """
+    create_picks()

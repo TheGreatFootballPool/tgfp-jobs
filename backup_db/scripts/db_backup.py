@@ -13,6 +13,7 @@ MONGO_INITDB_ROOT_USERNAME = os.getenv('MONGO_INITDB_ROOT_USERNAME')
 MONGO_INITDB_ROOT_PASSWORD = os.getenv('MONGO_INITDB_ROOT_PASSWORD')
 MONGO_HOST = os.getenv('MONGO_HOST')
 MONGO_PORT = os.getenv('MONGO_PORT')
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'back-up-production-db'
 
 logging.basicConfig(level=logging.INFO)
 
@@ -28,8 +29,6 @@ CMD = [
     "--gzip",
     f"--archive={FILENAME}"
 ]
-
-HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'back-up-production-db'
 
 
 def back_up_db():

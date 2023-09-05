@@ -12,3 +12,7 @@ Job scheduled for creating the picks page
 
 Add the service in the [docker-compose.yaml](docker-compose.yaml) to the Portainer Stack
 Add the variables listed in the docker compose file to the Portainer Stack
+
+## Configure the development environment
+
+1. Open the `tgfp-web` pycharm project and fire up a development stack on localhost
