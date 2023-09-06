@@ -3,7 +3,7 @@ import os
 import logging
 from rocketry import Rocketry
 
-from . import back_up_db
+from db_backup import back_up_db
 
 logging.basicConfig(level=logging.INFO)
 app = Rocketry()
