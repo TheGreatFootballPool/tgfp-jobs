@@ -10,6 +10,7 @@ logging.basicConfig(level=logging.INFO)
 app = Rocketry()
 
 SCHEDULE = os.getenv('SCHEDULE')
+logging.info("Got Cron Schedule: %s", SCHEDULE)
 
 
 @app.task(cron(SCHEDULE))
