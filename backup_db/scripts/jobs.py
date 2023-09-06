@@ -14,7 +14,7 @@ logging.info(SCHEDULE)
 back_up_db()
 
 
-@app.task(SCHEDULE)
+@app.task('every 30 minutes')
 def do_backup_db():
     """ Backs up the DB on a regular schedule """
     back_up_db()
