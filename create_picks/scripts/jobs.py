@@ -17,3 +17,6 @@ logging.info("Got Cron Schedule: %s", SCHEDULE)
 def create_picks_page():
     """ Creates the picks page on the given schedule """
     create_picks()
+
+if __name__ == "__main__":
+    app.run()
