@@ -2,7 +2,7 @@
 import os
 import logging
 from rocketry import Rocketry
-
+from rocketry.conds import every
 from db_backup import back_up_db
 
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +14,7 @@ logging.info(SCHEDULE)
 back_up_db()
 
 
-@app.task('every 30 minutes')
+@app.task(every('2 minutes'))
 def do_backup_db():
     """ Backs up the DB on a regular schedule """
     back_up_db()
