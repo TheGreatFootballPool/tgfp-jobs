@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 app = Rocketry()
 
 SCHEDULE = os.getenv('SCHEDULE')
-
+logging.info(SCHEDULE)
 # Do once on load
 back_up_db()
 
