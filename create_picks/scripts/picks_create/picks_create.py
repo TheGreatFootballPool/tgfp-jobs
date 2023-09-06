@@ -34,7 +34,7 @@ def create_picks():
         raise CreatePicksException("There should have been games!!!")
     all_json: List = []
     for nfl_game in nfl_games:
-        logging.info("nfl_game_id: %d", nfl_game.id)
+        logging.info("nfl_game_id: %s", nfl_game.id)
         logging.info(nfl_game.away_team.full_name)
         road_team_id = nfl_game.away_team.tgfp_id(tgfp_teams)
         home_team_id = nfl_game.home_team.tgfp_id(tgfp_teams)
