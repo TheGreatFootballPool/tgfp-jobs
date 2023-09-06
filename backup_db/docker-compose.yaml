@@ -10,6 +10,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
       - MONGO_PORT=$MONGO_PORT_EXTERNAL
+      - SCHEDULE=1 minute
 
     restart: unless-stopped
     volumes:
