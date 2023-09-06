@@ -10,11 +10,9 @@ app = Rocketry()
 
 SCHEDULE = os.getenv('SCHEDULE')
 logging.info(SCHEDULE)
-# Do once on load
-back_up_db()
 
 
-@app.task(every('2 minutes'))
+@app.task(every('3 minutes'))
 def do_backup_db():
     """ Backs up the DB on a regular schedule """
     back_up_db()
