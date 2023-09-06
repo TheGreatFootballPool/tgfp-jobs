@@ -2,6 +2,7 @@
 import os
 import logging
 from rocketry import Rocketry
+from rocketry.conds import cron
 
 from picks_create import create_picks
 
@@ -11,7 +12,7 @@ app = Rocketry()
 SCHEDULE = os.getenv('SCHEDULE')
 
 
-@app.task(SCHEDULE)
+@app.task(cron(SCHEDULE))
 def create_picks_page():
     """ Creates the picks page on the given schedule """
     create_picks()
