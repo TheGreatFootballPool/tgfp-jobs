@@ -3,7 +3,7 @@ import os
 import logging
 from rocketry import Rocketry
 
-from . import create_picks
+from picks_create import create_picks
 
 logging.basicConfig(level=logging.INFO)
 app = Rocketry()
