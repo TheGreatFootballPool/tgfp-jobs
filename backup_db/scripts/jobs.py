@@ -5,7 +5,7 @@ from db_backup import back_up_db
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 TZ = os.getenv('TZ')
-DB_BACKUP_INTERVAL_MINUTES = os.getenv('DB_BACKUP_INTERVAL_MINUTES')
+DB_BACKUP_INTERVAL_MINUTES: int = int(os.getenv('DB_BACKUP_INTERVAL_MINUTES'))
 
 logging.basicConfig(level=logging.INFO)
 
