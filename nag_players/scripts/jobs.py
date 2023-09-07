@@ -22,11 +22,11 @@ h: int = int(h)
 m: int = int(m)
 min_since_midnight = (h*60)+m
 
-h, m = divmod(min_since_midnight-7, 60)
+h, m = divmod(min_since_midnight-60, 60)
 first_warn_trigger = CronTrigger(day_of_week=GAME_START_DAY_OF_WEEK, hour=h, minute=m)
-h, m = divmod(min_since_midnight-6, 60)
+h, m = divmod(min_since_midnight-30, 60)
 second_warn_trigger = CronTrigger(day_of_week=GAME_START_DAY_OF_WEEK, hour=h, minute=m)
-h, m = divmod(min_since_midnight-5, 60)
+h, m = divmod(min_since_midnight-10, 60)
 third_warn_trigger = CronTrigger(day_of_week=GAME_START_DAY_OF_WEEK, hour=h, minute=m)
 
 all_triggers = OrTrigger([
