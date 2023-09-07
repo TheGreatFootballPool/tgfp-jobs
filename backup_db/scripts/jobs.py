@@ -2,11 +2,15 @@
 import os
 import logging
 from db_backup import back_up_db
+from apscheduler.schedulers.blocking import BlockingScheduler
+
+TZ = os.getenv('TZ')
+DB_BACKUP_INTERVAL_MINUTES = os.getenv('DB_BACKUP_INTERVAL_MINUTES')
 
 logging.basicConfig(level=logging.INFO)
 
-SCHEDULE = os.getenv('SCHEDULE')
-logging.info(SCHEDULE)
+scheduler = BlockingScheduler()
+scheduler.configure(timezone=TZ)
 
 
 def do_backup_db():
@@ -14,4 +18,5 @@ def do_backup_db():
     back_up_db()
 
 if __name__ == "__main__":
-    app.run()
+    scheduler.add_job(do_backup_db, 'interval', minutes=DB_BACKUP_INTERVAL_MINUTES)
+    scheduler.start()
