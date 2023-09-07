@@ -1,31 +1,44 @@
 """ Starting point, this is loaded first by the scheduler """
 import logging
 import os
-import schedule
-import sentry_sdk
-from . import nag_players
+from players_nag import nag_players
+from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.combining import OrTrigger
+from apscheduler.triggers.cron import CronTrigger
 
-# FIRST_NAG_TIME = "16:00"
-# SECOND_NAG_TIME = "16:50"
-# THIRD_NAG_TIME = "17:10"
-FIRST_NAG_TIME = "12:30"
-SECOND_NAG_TIME = "12:50"
-THIRD_NAG_TIME = "13:10"
-
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_DSN_TGFP_BIN'),
-    environment=os.getenv('SENTRY_ENVIRONMENT'),
-    traces_sample_rate=1.0
-)
 logging.basicConfig(level=logging.INFO)
 
 
-def load():
-    """ Load the schedule"""
-    logging.info("loading Nag Players schedule")
-    # schedule.every().thursday.at(FIRST_NAG_TIME).do(nag_players)
-    # schedule.every().thursday.at(SECOND_NAG_TIME).do(nag_players)
-    # schedule.every().thursday.at(THIRD_NAG_TIME).do(nag_players)
-    schedule.every().saturday.at(FIRST_NAG_TIME).do(nag_players)
-    schedule.every().saturday.at(SECOND_NAG_TIME).do(nag_players)
-    schedule.every().saturday.at(THIRD_NAG_TIME).do(nag_players)
+GAME_START_DAY_OF_WEEK = os.getenv('GAME_START_DAY_OF_WEEK')
+GAME_START_TIME = os.getenv('GAME_START_TIME')
+TZ = os.getenv('TZ')
+
+scheduler = BlockingScheduler()
+scheduler.configure(timezone=TZ)
+
+
+h, m = GAME_START_TIME.split(':')
+h: int = int(h)
+m: int = int(m)
+min_since_midnight = (h*60)+m
+
+h, m = divmod(min_since_midnight-7, 60)
+first_warn_trigger = CronTrigger(day_of_week=GAME_START_DAY_OF_WEEK, hour=h, minute=m)
+h, m = divmod(min_since_midnight-6, 60)
+second_warn_trigger = CronTrigger(day_of_week=GAME_START_DAY_OF_WEEK, hour=h, minute=m)
+h, m = divmod(min_since_midnight-5, 60)
+third_warn_trigger = CronTrigger(day_of_week=GAME_START_DAY_OF_WEEK, hour=h, minute=m)
+
+all_triggers = OrTrigger([
+    first_warn_trigger, second_warn_trigger, third_warn_trigger
+])
+
+
+def schedule_nag():
+    """ Creates the picks page on the given schedule """
+    nag_players()
+
+
+if __name__ == "__main__":
+    scheduler.add_job(schedule_nag, all_triggers)
+    scheduler.start()

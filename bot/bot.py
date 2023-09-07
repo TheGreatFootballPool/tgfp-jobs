@@ -22,7 +22,7 @@ bot: lightbulb.BotApp = lightbulb.BotApp(
 tasks.load(bot)
 
 HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'tgfp-bot'
-
+MONGO_URI = os.getenv('MONGO_URI')
 
 @bot.command
 @lightbulb.option(
@@ -35,7 +35,7 @@ HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'tgfp-bot'
 @lightbulb.implements(lightbulb.SlashCommand)
 async def do_i_care(ctx: lightbulb.Context) -> None:
     """ Answers the question. do I really care?"""
-    tgfp: TGFP = TGFP()
+    tgfp: TGFP = TGFP(MONGO_URI)
     player: TGFPPlayer = tgfp.find_players(discord_id=ctx.member.id)[0]
     if not player.this_weeks_picks():
         await ctx.respond("You must not care that much, you haven't even entered your picks yet!")

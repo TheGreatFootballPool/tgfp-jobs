@@ -19,6 +19,9 @@ class CreatePicksException(Exception):
 
 HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'create-picks-page'
 MONGO_URI = os.getenv('MONGO_URI')
+LISTMONK_USERNAME = os.getenv('LISTMONK_USERNAME')
+LISTMONK_PASSWORD = os.getenv('LISTMONK_PASSWORD')
+LISTMONK_API_URL = os.getenv('LISTMONK_API_URL')
 
 
 def create_picks():
@@ -64,6 +67,30 @@ def create_picks():
         response_text = response.read()
         logging.info(response_text)
 
+    send_email(week_no=week_no)
+
+
+def send_email(week_no):
+    """ Sends a listmonk email to everybody letting them know that the picks page is ready """
+    template_id = 5  # Picks page is ready template
+    list_id = 3  # tgfp-all list
+    body = f"Picks page is READY for week {week_no}"
+    subject = "Picks Page is READY!"
+    campaign_name = f"Picks Ready Week {week_no}"
+    client = listmonk_api.Api(
+        url=LISTMONK_API_URL,
+        username=LISTMONK_USERNAME,
+        password=LISTMONK_PASSWORD
+    )
+    created_campaign = client.create_campaign(
+        template_id=template_id,
+        body=body,
+        lists=[list_id],
+        name=campaign_name,
+        subject=subject
+    )
+    print(created_campaign["data"]["id"])
+
 
 if __name__ == '__main__':
-    create_picks()
+    send_email(week_no=1)
