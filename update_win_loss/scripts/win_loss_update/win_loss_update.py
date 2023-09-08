@@ -7,9 +7,8 @@ from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
 
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 class UpdateWinLossException(Exception):
+    """ Throw an exception """
     def __init__(self, msg, *args):
         super().__init__(args)
         self.msg = msg
@@ -23,6 +22,7 @@ MONGO_URI = os.getenv('MONGO_URI')
 
 
 def update_win_loss():
+    """ Update all the wins """
     tgfp = TGFP(MONGO_URI)
     logging.basicConfig(level=logging.INFO)
     week_no = tgfp.current_week()

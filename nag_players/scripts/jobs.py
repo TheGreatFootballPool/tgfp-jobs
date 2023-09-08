@@ -6,12 +6,11 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers.cron import CronTrigger
 
-logging.basicConfig(level=logging.INFO)
-
-
 GAME_START_DAY_OF_WEEK = os.getenv('GAME_START_DAY_OF_WEEK')
 GAME_START_TIME = os.getenv('GAME_START_TIME')
 TZ = os.getenv('TZ')
+
+logging.basicConfig(level=logging.INFO)
 
 scheduler = BlockingScheduler()
 scheduler.configure(timezone=TZ)
