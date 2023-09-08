@@ -16,6 +16,7 @@ GUILD_NAME: str = os.getenv('GUILD_NAME')
 
 
 def nag_players():
+    """ Nag the players that didn't do their picks """
     bot: hikari.GatewayBot = hikari.GatewayBot(
         token=DISCORD_AUTH_TOKEN,
         intents=hikari.Intents.ALL

@@ -1,5 +1,5 @@
 """ Update Win Loss module """
-from .update_win_loss import update_win_loss
+from .win_loss_update import update_win_loss
 
 __all__ = [
     "update_win_loss"

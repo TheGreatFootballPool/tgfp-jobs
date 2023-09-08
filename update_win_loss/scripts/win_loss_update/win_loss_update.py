@@ -18,11 +18,12 @@ class UpdateWinLossException(Exception):
         return f"Exception: {self.msg}"
 
 
-HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'update-win-loss-scores'
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'update-win-loss-scores'
+MONGO_URI = os.getenv('MONGO_URI')
 
 
 def update_win_loss():
-    tgfp = TGFP()
+    tgfp = TGFP(MONGO_URI)
     logging.basicConfig(level=logging.INFO)
     week_no = tgfp.current_week()
     nfl_data_source = TgfpNfl(week_no=week_no)
