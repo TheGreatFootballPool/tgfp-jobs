@@ -64,9 +64,6 @@ def _update_scores(nfl_data_source, tgfp_game: TGFPGame):
             tgfp_game.home_team_score = int(nfl_game.total_home_points)
             tgfp_game.road_team_score = int(nfl_game.total_away_points)
             tgfp_game.game_status = nfl_game.game_status_type
-            logging.info("saving a game score")
-        if nfl_game.is_final:
-            logging.info("Score is final")
 
     tgfp_game.save()
 
@@ -75,7 +72,6 @@ def _update_player_win_loss(tgfp):
     active_players = tgfp.find_players(player_active=True)
 
     for player in active_players:
-        logging.info("Working on %s", player.nick_name)
         picks = tgfp.find_picks(player_id=player.id)
         for pick in picks:
             pick.load_record()

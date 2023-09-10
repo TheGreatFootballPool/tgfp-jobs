@@ -44,6 +44,7 @@ def weekly_job_sweep():
             timezone=pytz.timezone(TZ),
             start_date=start_date,
             end_date=end_date,
+            jitter=90,
             args=[game]
         )
 
