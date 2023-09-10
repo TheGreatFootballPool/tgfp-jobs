@@ -19,9 +19,9 @@ class CreatePicksException(Exception):
 
 HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'create-picks-page'
 MONGO_URI = os.getenv('MONGO_URI')
-LISTMONK_USERNAME = os.getenv('LISTMONK_USERNAME')
-LISTMONK_PASSWORD = os.getenv('LISTMONK_PASSWORD')
-LISTMONK_API_URL = os.getenv('LISTMONK_API_URL')
+# LISTMONK_USERNAME = os.getenv('LISTMONK_USERNAME')
+# LISTMONK_PASSWORD = os.getenv('LISTMONK_PASSWORD')
+# LISTMONK_API_URL = os.getenv('LISTMONK_API_URL')
 
 
 def create_picks():
