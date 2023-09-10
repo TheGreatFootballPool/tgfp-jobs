@@ -3,6 +3,7 @@ import logging
 import os
 from datetime import datetime, timedelta
 from typing import List
+import urllib.request
 import pytz
 from tgfp_lib import TGFPGame
 from win_loss_update import this_weeks_games
@@ -10,6 +11,7 @@ from win_loss_update import update_win_loss
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 TZ = os.getenv('TZ')
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'update-win-loss-scores'
 CREATE_PICKS_DAY_OF_WEEK = os.getenv('CREATE_PICKS_DAY_OF_WEEK')
 # We want to schedule the update win loss after we've created the picks page
 CREATE_SCHEDULE_HOUR = int(os.getenv('CREATE_PICKS_HOUR')) + 1
@@ -47,6 +49,9 @@ def weekly_job_sweep():
             jitter=90,
             args=[game]
         )
+    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
+        logging.info(response.read())
+
 
 if __name__ == "__main__":
     # run weekly_job_sweep once (startup)

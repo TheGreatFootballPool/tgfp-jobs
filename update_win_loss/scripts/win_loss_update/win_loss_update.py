@@ -1,12 +1,10 @@
 """ This file will update all the scores in the mongo DB for the great football pool """
 import os
 from typing import List
-import urllib.request
 import logging
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
-HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'update-win-loss-scores'
 MONGO_URI = os.getenv('MONGO_URI')
 TZ = os.getenv('TZ')
 
@@ -51,8 +49,6 @@ def update_win_loss(tgfp_game: TGFPGame):
     except UpdateWinLossException as exception:
         logging.error(exception)
         return
-    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
-        logging.info(response.read())
 
 
 def _update_scores(nfl_data_source, tgfp_game: TGFPGame):
