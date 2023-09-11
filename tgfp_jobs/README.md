@@ -1,6 +1,6 @@
-# Backup DB
+# All TGFP Jobs / background processes
 
-Backs up the production database and creates a rotated backup file.
+Master scheduler for all tgfp jobs
 
 ## Configuration for Portainer
 

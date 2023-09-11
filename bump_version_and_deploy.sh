@@ -12,4 +12,4 @@ git push
 NEW_VERSION=`poetry version -s`
 git tag v${NEW_VERSION}
 git push origin v${NEW_VERSION}
-# TODO: Add code to push to the production server via ssh
+ssh goshdarnedserver.lan 'cd ~/tgfp ; git pull --rebase'
