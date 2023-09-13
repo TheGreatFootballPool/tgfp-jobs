@@ -15,6 +15,15 @@ DISCORD_AUTH_TOKEN: str = os.getenv('DISCORD_AUTH_TOKEN')
 GUILD_NAME: str = os.getenv('GUILD_NAME')
 
 
+def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
+    """ Returns the 'first' game of the week """
+    if tgfp is None:
+        tgfp = TGFP(MONGO_URI)
+    games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
+    games.sort(key=lambda x: x.start_time, reverse=True)
+    return games[-1]
+
+
 def nag_players():
     """ Nag the players that didn't do their picks """
     bot: hikari.GatewayBot = hikari.GatewayBot(
@@ -26,10 +35,8 @@ def nag_players():
     async def guild_available(event: hikari.GuildAvailableEvent):
         """ Run when guid is available """
         tgfp = TGFP(MONGO_URI)
-
-        games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
-        games.sort(key=lambda x: x.start_time, reverse=True)
-        game_1_start = arrow.get(games[-1].start_time)
+        first_game: TGFPGame = get_first_game_of_the_week(tgfp)
+        game_1_start = arrow.get(first_game.start_time)
         print(game_1_start)
         print(arrow.utcnow())
         delta: datetime.timedelta = game_1_start - arrow.utcnow()
@@ -63,7 +70,6 @@ def nag_players():
             await asyncio.sleep(2)
             await bot.close()
 
-    """ Nag Players bot run"""
     logging.info("About to nag some players")
     with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
         logging.info(response.read())
