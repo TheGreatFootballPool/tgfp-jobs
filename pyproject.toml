@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tgfp"
-version = "5.1.0"
+version = "5.2.0"
 description = "Scripts to help with the running of The Great Football Pool"
 authors = ["John Sturgeon <john.sturgeon@me.com>"]
 license = "MIT"
@@ -17,6 +17,7 @@ hikari-lightbulb = "^2.2.4"
 pylint = "^2.17.5"
 listmonk-api = "^0.1.2"
 apscheduler = "^3.10.4"
+paho-mqtt = "^1.6.1"
 
 
 [build-system]

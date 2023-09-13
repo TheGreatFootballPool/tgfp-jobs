@@ -420,6 +420,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "paho-mqtt"
+version = "1.6.1"
+description = "MQTT version 5.0/3.1.1 client class"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+proxy = ["PySocks"]
+
+[[package]]
 name = "platformdirs"
 version = "3.10.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -731,7 +742,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10.5,<3.11"
-content-hash = "f84ac8a5b8918b5d618f20678c79e85ebe94d85981582f5562b7b64823decd01"
+content-hash = "34174b4d8b773f876eea3b568539a3f55febc4f62cfd5b2313b12e80eb04e7c0"
 
 [metadata.files]
 aiohttp = [
@@ -1186,6 +1197,9 @@ multidict = [
 ]
 onetoonemap = [
     {file = "onetoonemap-1.0.0.tar.gz", hash = "sha256:9b739c574f9dffb927e5c21e9c9fe90a29f4b94103cd3d73cdf9c3cb286852b7"},
+]
+paho-mqtt = [
+    {file = "paho-mqtt-1.6.1.tar.gz", hash = "sha256:2a8291c81623aec00372b5a85558a372c747cbca8e9934dfe218638b8eefc26f"},
 ]
 platformdirs = [
     {file = "platformdirs-3.10.0-py3-none-any.whl", hash = "sha256:d7c24979f292f916dc9cbf8648319032f551ea8c49a4c9bf2fb556a02070ec1d"},
