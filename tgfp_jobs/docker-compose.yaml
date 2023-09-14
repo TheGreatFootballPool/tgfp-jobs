@@ -3,7 +3,7 @@ services:
     image: johnofcamas/tgfp-job-runner
     container_name: tgfp-run-jobs
     env_file:
-      - stacks.env
+      - stack.env
     restart: unless-stopped
     volumes:
       - $TGFP_HOME/tgfp_jobs/scripts:/app/scripts
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     command: gunicorn -b 0.0.0.0:$WEB_PORT app:app
     env_file:
-      - stacks.env
+      - stack.env
     ports:
       - "$WEB_PORT:$WEB_PORT"
     depends_on:
@@ -26,7 +26,7 @@ services:
   tgfp-mongodb:
     image: mongo:6
     env_file:
-      - stacks.env
+      - stack.env
     restart: unless-stopped
     container_name: tgfp-mongodb
     hostname: mongo

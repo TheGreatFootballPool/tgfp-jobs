@@ -3,7 +3,7 @@ services:
     image: johnofcamas/tgfp-job-runner
     container_name: tgfp-bot
     env_file:
-      - stacks.env
+      - stack.env
     restart: unless-stopped
     volumes:
       - $TGFP_HOME/bot/scripts:/app/scripts
