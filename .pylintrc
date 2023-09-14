@@ -1,8 +1,5 @@
 [MASTER]
 init-hook='import sys;
-  sys.path.append("create_picks/scripts");
-  sys.path.append("backup_db/scripts");
-  sys.path.append("nag_players/scripts");
-  sys.path.append("update_win_loss/scripts");
+  sys.path.append("bot/scripts");
   sys.path.append("tgfp_jobs/scripts");
           '

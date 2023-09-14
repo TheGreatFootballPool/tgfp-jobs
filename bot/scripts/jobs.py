@@ -2,27 +2,24 @@
 import os
 import urllib.request
 import logging
-import sentry_sdk
 import hikari
 import lightbulb
 from lightbulb.ext import tasks
 from tgfp_lib import TGFP, TGFPPlayer
-from scripts import get_help, get_game_care_scores_for_player, formatted_care, pick_detail_embed
+from discord_bot import get_help, get_game_care_scores_for_player, formatted_care, pick_detail_embed
 
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_DSN_TGFP_BOT'),
-    environment=os.getenv('SENTRY_ENVIRONMENT'),
-    traces_sample_rate=1.0
-)
+HEALTHCHECK_URL = os.getenv('HEALTHCHECK_BASE_URL') + 'tgfp-bot'
+MONGO_URI = os.getenv('MONGO_URI')
+DISCORD_AUTH_TOKEN = os.getenv('DISCORD_AUTH_TOKEN')
+SCHEDULE_BOT_PING_INTERVAL: float = float(os.getenv('SCHEDULE_BOT_PING_INTERVAL'))
+
 bot: lightbulb.BotApp = lightbulb.BotApp(
-    token=os.getenv('DISCORD_AUTH_TOKEN'),
+    token=DISCORD_AUTH_TOKEN,
     intents=hikari.Intents.ALL,
     banner=None
 )
 tasks.load(bot)
 
-HEALTHCHECK_URL = os.getenv('HEALTHCHECK_URL') + 'tgfp-bot'
-MONGO_URI = os.getenv('MONGO_URI')
 
 @bot.command
 @lightbulb.option(
@@ -68,7 +65,7 @@ async def give_help(ctx: lightbulb.Context) -> None:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def pick_detail(ctx: lightbulb.Context) -> None:
     """ Gives very detailed picks """
-    tgfp: TGFP = TGFP()
+    tgfp: TGFP = TGFP(MONGO_URI)
     player: TGFPPlayer = tgfp.find_players(discord_id=ctx.member.id)[0]
     if not player.this_weeks_picks():
         await ctx.respond("You must not care that much, you haven't even entered your picks yet!")
@@ -77,7 +74,7 @@ async def pick_detail(ctx: lightbulb.Context) -> None:
         await ctx.respond(pick_detail_embed(scores, tgfp))
 
 
-@tasks.task(m=15)
+@tasks.task(m=SCHEDULE_BOT_PING_INTERVAL)
 async def ping_healthchecks():
     """ Ping healthchecks"""
     logging.info("About to ping healthchecks")

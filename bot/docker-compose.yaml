@@ -2,15 +2,11 @@ services:
   tgfp-bot:
     image: johnofcamas/tgfp-job-runner
     container_name: tgfp-bot
-    environment:
-      - DOPPLER_TOKEN=$DOPPLER_TOKEN
-      - DOPPLER_ENV=1
-      - TZ=US/Pacific
+    env_file:
+      - stacks.env
     restart: unless-stopped
-    command: "bot.py"
     volumes:
       - $TGFP_HOME/bot/scripts:/app/scripts
-      - $TGFP_HOME/bot/bot.py:/app/bot.py
     depends_on:
       tgfp-mongodb-prd:
-        condition: service_healthy
+        condition: service_started
