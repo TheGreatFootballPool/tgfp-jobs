@@ -8,5 +8,5 @@ services:
     volumes:
       - $TGFP_HOME/bot/scripts:/app/scripts
     depends_on:
-      tgfp-mongodb-prd:
+      tgfp-mongodb:
         condition: service_started
