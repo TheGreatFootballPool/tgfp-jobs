@@ -6,7 +6,7 @@ from typing import List
 from datetime import datetime, timedelta
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
-import paho.mqtt.client as mqtt
+from prefect import flow, task, get_run_logger, serve
 
 from tgfp_lib import TGFPGame
 
@@ -20,8 +20,6 @@ SCHEDULE_HEALTH_CHECK_MINUTES: int = int(os.getenv('SCHEDULE_HEALTH_CHECK_MINUTE
 SCHEDULE_START_DAY_OF_WEEK: str = os.getenv('SCHEDULE_START_DAY_OF_WEEK')
 SCHEDULE_START_HOUR: int = int(os.getenv('SCHEDULE_START_HOUR'))
 SCHEDULE_START_MINUTE: int = int(os.getenv('SCHEDULE_START_MINUTE'))
-MQTT_HOST: str = os.getenv('MQTT_HOST')
-# ENV variables
 TZ: str = os.getenv('TZ')
 LOG_LEVEL: str = os.getenv('LOG_LEVEL')
 HEALTHCHECK_BASE_URL: str = os.getenv('HEALTHCHECK_BASE_URL')
@@ -30,42 +28,6 @@ logging.basicConfig(level=LOG_LEVEL)
 
 scheduler: BackgroundScheduler = BackgroundScheduler()
 scheduler.configure(timezone=TZ)
-
-
-def on_message_create_picks(the_client, userdata, msg):
-    """ mqtt message received """
-    logging.info("Request to create picks page from MQTT")
-    create_picks()
-    ping_healthchecks(slug='create-picks-page')
-
-
-def on_message_create_win_loss_schedule(the_client, userdata, msg):
-    """ mqtt message received """
-    logging.info("Request to create win / loss schedule from MQTT")
-    create_update_win_loss_schedule()
-    ping_healthchecks(slug='create-win-loss-schedule')
-
-
-def on_message_create_nag_player_schedule(the_client, userdata, msg):
-    """ mqtt message received """
-    logging.info("Request to create nag player schedule from MQTT")
-    create_nag_player_schedule()
-    ping_healthchecks(slug='create-nag-player-schedule')
-
-
-client = mqtt.Client('tgfp_job_server')
-client.message_callback_add(
-    'tgfp/create_picks',
-    on_message_create_picks)
-client.message_callback_add(
-    'tgfp/create_win_loss_schedule',
-    on_message_create_win_loss_schedule)
-client.message_callback_add(
-    'tgfp/create_nag_player_schedule',
-    on_message_create_nag_player_schedule)
-
-client.connect(MQTT_HOST, 1883)
-client.subscribe('tgfp/#')
 
 
 def ping_healthchecks(slug: str):
@@ -102,10 +64,12 @@ def load_all_jobs():
     load_week_start_schedule()
 
 
+@flow()
 def run_backup_db():
     """Back up the database """
+    logger = get_run_logger()
+    logger.info("Backing up database")
     back_up_db()
-    ping_healthchecks(slug='backup-db')
 
 
 def run_week_start():
@@ -165,22 +129,29 @@ def create_nag_player_schedule():
     scheduler.add_job(run_nag_players, 'date', run_date=nag_date)
 
 if __name__ == "__main__":
-    load_all_jobs()
-    # Let's add a schedule to ping healthchecks as long as we're up
-    scheduler.add_job(
-        ping_healthchecks,
-        'interval',
-        minutes=SCHEDULE_HEALTH_CHECK_MINUTES,
-        args=['job-runner']
+    backup_db_deploy = run_backup_db.to_deployment(
+        interval=timedelta(minutes=30),
+        name="backup_db",
+        description="Backs up the TGFP Database regularly",
+        version="0.1"
     )
-    ping_healthchecks(slug='job-runner')
-    scheduler.start()
-    try:
-        client.loop_forever()
-        # start the mqtt listener
-    except (KeyboardInterrupt, SystemExit):
-        pass
-    finally:
-        scheduler.shutdown()
-        client.loop_stop()
-        client.disconnect()
+    serve(backup_db_deploy)
+    # load_all_jobs()
+    # # Let's add a schedule to ping healthchecks as long as we're up
+    # scheduler.add_job(
+    #     ping_healthchecks,
+    #     'interval',
+    #     minutes=SCHEDULE_HEALTH_CHECK_MINUTES,
+    #     args=['job-runner']
+    # )
+    # ping_healthchecks(slug='job-runner')
+    # scheduler.start()
+    # try:
+    #     client.loop_forever()
+    #     # start the mqtt listener
+    # except (KeyboardInterrupt, SystemExit):
+    #     pass
+    # finally:
+    #     scheduler.shutdown()
+    #     client.loop_stop()
+    #     client.disconnect()
