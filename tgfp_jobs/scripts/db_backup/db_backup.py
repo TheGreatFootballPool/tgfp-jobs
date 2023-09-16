@@ -4,15 +4,29 @@ import os
 import shutil
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
+from prefect.blocks.system import Secret
+from prefect import get_run_logger, variables
 
-from prefect import get_run_logger
+ENV: str = os.getenv('ENVIRONMENT')
 
-MONGO_URI = os.getenv('MONGO_URI')
-BACKUP_DIR = os.getenv('BACKUP_DIR')
-MONGO_INITDB_ROOT_USERNAME = os.getenv('MONGO_INITDB_ROOT_USERNAME')
-MONGO_INITDB_ROOT_PASSWORD = os.getenv('MONGO_INITDB_ROOT_PASSWORD')
-MONGO_HOST = os.getenv('MONGO_HOST')
-MONGO_PORT = os.getenv('MONGO_PORT')
+
+def get_secret(secret_name: str, is_var: bool = False, use_env: bool = True) -> str:
+    """ Retrieves the secret or variable, using the current environment """
+    secret_string: str
+    env_string: str = ENV if use_env else ""
+    if is_var:
+        return str(variables.get(f"{secret_name}_{env_string}"))
+    with Secret.load(f"{secret_name}-{env_string}") as a_secret:
+        secret_string = a_secret.get()
+    return secret_string
+
+
+MONGO_URI = get_secret('mongo-uri')
+BACKUP_DIR = get_secret('backup_dir', is_var=True)
+MONGO_INITDB_ROOT_USERNAME = get_secret('mongo-root-username')
+MONGO_INITDB_ROOT_PASSWORD = get_secret('mongo-root-password')
+MONGO_HOST = get_secret('mongo_host', is_var=True)
+MONGO_PORT = 27017
 
 FILENAME = f"{BACKUP_DIR}/tgfp"
 CMD = [
