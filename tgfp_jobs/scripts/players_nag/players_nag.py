@@ -1,17 +1,17 @@
 """ Script will check for players who have not done their picks and 'nag' @mention them """
-import urllib.request
 import asyncio
 import datetime
-import os
 from typing import Optional, List
 import logging
 import arrow
 import hikari
 from tgfp_lib import TGFP, TGFPPlayer, TGFPGame
 
-MONGO_URI: str = os.getenv('MONGO_URI')
-DISCORD_AUTH_TOKEN: str = os.getenv('DISCORD_AUTH_TOKEN')
-GUILD_NAME: str = os.getenv('GUILD_NAME')
+from scripts.prefect_helpers import helpers
+
+MONGO_URI: str = helpers.get_secret('mongo-uri')
+DISCORD_AUTH_TOKEN: str = helpers.get_secret('discord-auth-token', use_env=False)
+GUILD_NAME: str = helpers.get_secret('guild_name', is_var=True)
 
 
 def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
@@ -70,8 +70,6 @@ def nag_players():
             await bot.close()
 
     logging.info("About to nag some players")
-    with urllib.request.urlopen(HEALTHCHECK_URL, timeout=10) as response:
-        logging.info(response.read())
     bot.run()
 
 if __name__ == '__main__':

@@ -1,20 +1,16 @@
 """ This is the file that will be loaded by the container """
 import os
 from datetime import timedelta
-from prefect import flow, get_run_logger, variables, serve
-from prefect.blocks.system import Secret
+from prefect import flow, get_run_logger, serve
 from prefect.client.schemas.schedules import IntervalSchedule, CronSchedule
-from prefect_helpers import get_secret
 from tgfp_lib import TGFPGame
 
 from db_backup import back_up_db
 from picks_create import create_picks
 # from win_loss_update import this_weeks_games, update_win_loss
-from players_nag import get_first_game_of_the_week, nag_players
+from players_nag import nag_players
 
 ENV: str = os.getenv('ENVIRONMENT')
-
-
 TZ: str = os.getenv('TZ')
 
 
@@ -23,7 +19,7 @@ TZ: str = os.getenv('TZ')
 #     """ Loads all the jobs """
 #     load_db_backup_schedule()
 #     load_week_start_schedule()
-@flow()
+@flow
 def run_backup_db():
     """Back up the database """
     logger = get_run_logger()
@@ -31,7 +27,7 @@ def run_backup_db():
     back_up_db()
 
 
-@flow()
+@flow
 def run_begin_week():
     """ Gets the football pool ready for the week """
     # First we create the picks page which loads the current week schedule
@@ -48,9 +44,10 @@ def run_begin_week():
 
 def run_update_win_loss(game: TGFPGame):
     """ Update scores / win / loss / standings """
-    update_win_loss(game)
+    # update_win_loss(game)
 
 
+@flow
 def run_nag_players():
     """ Nags the players re upcoming game """
     nag_players()
@@ -93,18 +90,23 @@ if __name__ == "__main__":
         schedule=IntervalSchedule(interval=timedelta(minutes=30), timezone=TZ),
         name="Back up DB",
         description="Backs up the TGFP Database regularly",
-        version="0.2"
+        version="0.3"
     )
-    # Create 'begin week' deployment
     begin_week_deploy = run_begin_week.to_deployment(
         schedule=CronSchedule(cron="0 6 * * 1", timezone=TZ),
         name="Begin the Week",
         description="Creates the picks page, and triggers scheduling of games",
+        version="0.2"
+    )
+    nag_players_deploy = run_nag_players.to_deployment(
+        name="Nag Players",
+        description="Nag the players in the football pool to enter their picks",
         version="0.1"
     )
     serve(
         backup_db_deploy,
-        begin_week_deploy
+        begin_week_deploy,
+        nag_players_deploy
     )
     # load_all_jobs()
     # # Let's add a schedule to ping healthchecks as long as we're up
