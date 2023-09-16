@@ -18,11 +18,11 @@ class CreatePicksException(Exception):
 
 
 MONGO_URI = helpers.get_secret('mongo-uri')
-logger = get_run_logger()
 
 
 def create_picks():
     """ Runs the main method to create the picks page """
+    logger = get_run_logger()
     tgfp = TGFP(MONGO_URI)
     tgfp_teams = tgfp.teams()
     week_no = tgfp.current_week()
@@ -30,7 +30,7 @@ def create_picks():
     nfl_games = nfl.games()
     logger.info("Current week: %d", week_no)
     if not nfl_games:
-        logging.error("Create Picks had an exception")
+        logger.error("Create Picks had an exception")
         raise CreatePicksException("There should have been games!!!")
     all_json: List = []
     for nfl_game in nfl_games:
