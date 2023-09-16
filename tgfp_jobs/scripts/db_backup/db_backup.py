@@ -1,28 +1,20 @@
 """ Script will check for players who have not done their picks and 'nag' @mention them """
-import subprocess
 import os
 import shutil
+import subprocess
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
-from prefect.blocks.system import Secret
-from prefect import get_run_logger, variables
+from prefect import get_run_logger
+from scripts.prefect_helpers import helpers
 
 ENV: str = os.getenv('ENVIRONMENT')
 
 
-def get_secret(secret_name: str, is_var: bool = False, use_env: bool = True) -> str:
-    """ Retrieves the secret or variable, using the current environment """
-    env_string: str = ENV if use_env else ""
-    if is_var:
-        return str(variables.get(f"{secret_name}_{env_string}"))
-    return Secret.load(f"{secret_name}-{env_string}").get()
-
-
-MONGO_URI = get_secret('mongo-uri')
-BACKUP_DIR = get_secret('backup_dir', is_var=True)
-MONGO_INITDB_ROOT_USERNAME = get_secret('mongo-root-username')
-MONGO_INITDB_ROOT_PASSWORD = get_secret('mongo-root-password')
-MONGO_HOST = get_secret('mongo_host', is_var=True)
+MONGO_URI = helpers.get_secret('mongo-uri')
+BACKUP_DIR = helpers.get_secret('backup_dir', is_var=True)
+MONGO_INITDB_ROOT_USERNAME = helpers.get_secret('mongo-root-username')
+MONGO_INITDB_ROOT_PASSWORD = helpers.get_secret('mongo-root-password')
+MONGO_HOST = helpers.get_secret('mongo_host', is_var=True)
 MONGO_PORT = 27017
 
 FILENAME = f"{BACKUP_DIR}/tgfp"

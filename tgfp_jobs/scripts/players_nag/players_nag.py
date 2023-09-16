@@ -9,7 +9,6 @@ import arrow
 import hikari
 from tgfp_lib import TGFP, TGFPPlayer, TGFPGame
 
-HEALTHCHECK_URL: str = os.getenv('HEALTHCHECK_BASE_URL') + 'nag-players'
 MONGO_URI: str = os.getenv('MONGO_URI')
 DISCORD_AUTH_TOKEN: str = os.getenv('DISCORD_AUTH_TOKEN')
 GUILD_NAME: str = os.getenv('GUILD_NAME')

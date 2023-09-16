@@ -2,4 +2,5 @@
 init-hook='import sys;
   sys.path.append("bot/scripts");
   sys.path.append("tgfp_jobs/scripts");
+  sys.path.append("tgfp_jobs");
           '
