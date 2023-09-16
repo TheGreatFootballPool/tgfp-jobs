@@ -9,16 +9,12 @@ from db_backup import back_up_db
 from picks_create import create_picks
 # from win_loss_update import this_weeks_games, update_win_loss
 from players_nag import nag_players
+from scripts.win_loss_update import update_win_loss
 
 ENV: str = os.getenv('ENVIRONMENT')
 TZ: str = os.getenv('TZ')
 
 
-#
-# def load_all_jobs():
-#     """ Loads all the jobs """
-#     load_db_backup_schedule()
-#     load_week_start_schedule()
 @flow
 def run_backup_db():
     """Back up the database """
@@ -29,22 +25,14 @@ def run_backup_db():
 
 @flow
 def run_begin_week():
-    """ Gets the football pool ready for the week """
-    # First we create the picks page which loads the current week schedule
-    #   into the DB
+    """ Create the picks page, and schedule pause / resume jobs """
     create_picks()
-    # # Next, now that we have the games loaded, let's create the schedule
-    # #   for updating the win/loss/scores
-    # create_update_win_loss_schedule()
-    # ping_healthchecks(slug='create-win-loss-schedule')
-    # # Next, create the 'nag' schedule based on the first game
-    # create_nag_player_schedule()
-    # ping_healthchecks(slug='create-nag-player-schedule')
 
 
-def run_update_win_loss(game: TGFPGame):
+@flow
+def run_update_win_loss():
     """ Update scores / win / loss / standings """
-    # update_win_loss(game)
+    update_win_loss()
 
 
 @flow
@@ -103,11 +91,19 @@ if __name__ == "__main__":
         description="Nag the players in the football pool to enter their picks",
         version="0.1"
     )
+    update_win_loss_deploy = run_update_win_loss.to_deployment(
+        schedule=IntervalSchedule(interval=timedelta(minutes=5)),
+        name="Update Win / Loss / Scores",
+        description="Updates the scores and win/loss records",
+        version="0.1"
+    )
     serve(
         backup_db_deploy,
         begin_week_deploy,
-        nag_players_deploy
+        nag_players_deploy,
+        update_win_loss_deploy
     )
+    update_win_loss_deploy.is_schedule_active = False
     # load_all_jobs()
     # # Let's add a schedule to ping healthchecks as long as we're up
     # scheduler.add_job(
