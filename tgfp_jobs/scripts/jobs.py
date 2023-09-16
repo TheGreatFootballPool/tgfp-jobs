@@ -93,17 +93,17 @@ if __name__ == "__main__":
     )
     update_win_loss_deploy = run_update_win_loss.to_deployment(
         schedule=IntervalSchedule(interval=timedelta(minutes=5)),
-        name="Update Win / Loss / Scores",
+        name="Update Win Loss Scores",
         description="Updates the scores and win/loss records",
         version="0.1"
     )
+    update_win_loss_deploy.is_schedule_active = False
     serve(
         backup_db_deploy,
         begin_week_deploy,
         nag_players_deploy,
         update_win_loss_deploy
     )
-    update_win_loss_deploy.is_schedule_active = False
     # load_all_jobs()
     # # Let's add a schedule to ping healthchecks as long as we're up
     # scheduler.add_job(
