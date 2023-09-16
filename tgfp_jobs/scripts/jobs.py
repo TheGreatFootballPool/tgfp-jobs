@@ -1,6 +1,6 @@
 """ This is the file that will be loaded by the container """
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 from prefect import flow, get_run_logger, variables, serve
 from prefect.blocks.system import Secret
 from prefect.client.schemas.schedules import IntervalSchedule, CronSchedule
@@ -9,8 +9,8 @@ from tgfp_lib import TGFPGame
 
 from db_backup import back_up_db
 from picks_create import create_picks
-from win_loss_update import this_weeks_games, update_win_loss
-from players_nag import get_first_game_of_the_week, nag_players
+# from win_loss_update import this_weeks_games, update_win_loss
+# from players_nag import get_first_game_of_the_week, nag_players
 
 ENV: str = os.getenv('ENVIRONMENT')
 

@@ -12,13 +12,10 @@ ENV: str = os.getenv('ENVIRONMENT')
 
 def get_secret(secret_name: str, is_var: bool = False, use_env: bool = True) -> str:
     """ Retrieves the secret or variable, using the current environment """
-    secret_string: str
     env_string: str = ENV if use_env else ""
     if is_var:
         return str(variables.get(f"{secret_name}_{env_string}"))
-    with Secret.load(f"{secret_name}-{env_string}") as a_secret:
-        secret_string = a_secret.get()
-    return secret_string
+    return Secret.load(f"{secret_name}-{env_string}").get()
 
 
 MONGO_URI = get_secret('mongo-uri')
