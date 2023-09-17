@@ -62,12 +62,12 @@ def create_update_win_loss_schedule():
     jitter: int = randrange(1, 100)
     for game in games:
         jitter = randrange(1, 100)
-        start_date: datetime = game.pacific_start_time - timedelta(seconds=jitter)
+        start_date: datetime = (game.pacific_start_time - timedelta(seconds=jitter))
         log_msg: str = f"Adding game run flow: {game.tgfp_nfl_game_id} for time {start_date}"
         logger.info(log_msg)
         run_deployment(
             name="win-loss-update/update",
-            scheduled_time=game.pacific_start_time,
+            scheduled_time=start_date,
             timeout=0,
             parameters={"tgfp_nfl_game_id": game.tgfp_nfl_game_id},
             flow_run_name=f"update-scores-game-{game.tgfp_nfl_game_id}"
