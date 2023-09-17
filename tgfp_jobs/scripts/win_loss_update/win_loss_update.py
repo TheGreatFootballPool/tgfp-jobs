@@ -60,7 +60,8 @@ def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
 
     tgfp_game.save()
     logger = get_run_logger()
-    logger.info("Game state: " + game.game_status)
+    log_msg = f"Game state: {tgfp_game.game_status}"
+    logger.info(log_msg)
     return tgfp_game.is_final
 
 
