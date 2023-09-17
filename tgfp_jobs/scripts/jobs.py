@@ -41,9 +41,11 @@ def run_update_win_loss(tgfp_nfl_game_id: str):
     """ Update scores / win / loss / standings """
     logger = get_run_logger()
     game_is_final: bool = False
-    while game_is_final is not True:
+    while True:
         logger.info("Updating game")
         game_is_final = update_win_loss(tgfp_nfl_game_id)
+        if game_is_final:
+            break
         sleep(300)
     logger.info("Got a final for the game, exiting run flow")
 
