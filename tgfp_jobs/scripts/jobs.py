@@ -53,7 +53,7 @@ def run_nag_players():
     nag_players()
 
 
-@flow(name="create-update-game-schedule")
+@flow(name="schedule-game-updates")
 def create_update_win_loss_schedule():
     """ Every week go get the games, and add the jobs to the scheduler for each game """
     logger = get_run_logger()
@@ -90,28 +90,28 @@ if __name__ == "__main__":
     # Create backup job deployment
     backup_db_deploy = run_backup_db.to_deployment(
         schedule=IntervalSchedule(interval=timedelta(minutes=30), timezone=TZ),
-        name="back-up-db-deployment",
+        name="backup",
         description="Backs up the TGFP Database regularly",
         version="0.4"
     )
     begin_week_deploy = run_begin_week.to_deployment(
         schedule=CronSchedule(cron="0 6 * * 1", timezone=TZ),
-        name="begin-week-deployment",
+        name="begin-week",
         description="Creates the picks page, and triggers scheduling of games",
         version="0.3"
     )
     nag_players_deploy = run_nag_players.to_deployment(
-        name="nag-players-deployment",
+        name="nag",
         description="Nag the players in the football pool to enter their picks",
         version="0.2"
     )
     update_win_loss_deploy = run_update_win_loss.to_deployment(
-        name="win-loss-update-deployment",
+        name="update",
         description="Updates the scores and win/loss records",
         version="0.3"
     )
     create_update_win_loss_schedule_deploy = create_update_win_loss_schedule.to_deployment(
-        name="create-update-schedule-deployment",
+        name="schedule-update-flows",
         description="Run manually to create the win/loss update schedule for the week",
         version="1.0"
     )
