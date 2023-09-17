@@ -62,13 +62,13 @@ def create_update_win_loss_schedule():
         start_date: datetime = game.pacific_start_time
         log_msg: str = f"Adding game run flow: {game.tgfp_nfl_game_id} for time {start_date}"
         logger.info(log_msg)
-        # run_deployment(
-        #     name="7e370338-a3b5-4cf6-944a-3708f53a82b7",
-        #     scheduled_time=game.pacific_start_time,
-        #     timeout=0,
-        #     parameters={"tgfp_nfl_game_id": game.tgfp_nfl_game_id},
-        #     flow_run_name=f"update-scores-game-{game.tgfp_nfl_game_id}"
-        # )
+        run_deployment(
+            name="win-loss-update/update",
+            scheduled_time=game.pacific_start_time,
+            timeout=0,
+            parameters={"tgfp_nfl_game_id": game.tgfp_nfl_game_id},
+            flow_run_name=f"update-scores-game-{game.tgfp_nfl_game_id}"
+        )
 
 
 @flow(name="create-nag-player-schedule")

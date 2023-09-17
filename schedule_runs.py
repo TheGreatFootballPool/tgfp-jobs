@@ -18,8 +18,8 @@ def slow_run(name: str):
 if __name__ == '__main__':
     run_date: datetime = datetime.utcnow() + timedelta(minutes=5)
     run_date2: datetime = run_date + timedelta(minutes=20)
-    run_deployment(name="7e370338-a3b5-4cf6-944a-3708f53a82b7", scheduled_time=run_date, timeout=0)
-    run_deployment(name="7e370338-a3b5-4cf6-944a-3708f53a82b7", scheduled_time=run_date2, timeout=0)
+    run_deployment(name="win-loss-update/update", scheduled_time=run_date, timeout=0)
+    run_deployment(name="win-loss-update/update", scheduled_time=run_date2, timeout=0)
     # deployment = backup_db_deploy = slow_run.to_deployment(
     #     schedule=IntervalSchedule(interval=timedelta(minutes=1)),
     #     name="Slow Run",
