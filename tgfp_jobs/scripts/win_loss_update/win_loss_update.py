@@ -1,7 +1,6 @@
-""" This file will update all the scores in the mongo DB for the great football pool """
+""" Take a game, and get the current scores from TgfpNfl and update the TGFP game """
 import os
 from typing import List
-import logging
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
@@ -21,63 +20,48 @@ class UpdateWinLossException(Exception):
         return f"Exception: {self.msg}"
 
 
-def update_win_loss():
-    """ Update all the wins """
+def update_win_loss(tgfp_nfl_game_id: str) -> bool:
+    """
+    Update all the wins / losses / scores, etc...
+    @param tgfp_nfl_game_id:
+    @return: True if game is final, otherwise False
+    """
     tgfp = TGFP(MONGO_URI)
-    logging.basicConfig(level=logging.INFO)
     week_no = tgfp.current_week()
     nfl_data_source = TgfpNfl(week_no=week_no)
-    nfl_game = nfl_data_source.games()[0]
-    games: List[TGFPGame] = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)
-    if not games:
-        logging.warning(
-            "No games yet, this happens if you haven't created the picks \
-            page for the current week Current week is: %s", tgfp.current_week())
-    else:
-        try:
-            _update_scores(tgfp, nfl_data_source)
-        except UpdateWinLossException as exception:
-            logging.error(exception)
-            return
+    games: List[TGFPGame] = tgfp.find_games(tgfp_nfl_game_id=tgfp_nfl_game_id)
+    if len(games) != 1:
+        raise UpdateWinLossException(f"We should have found a game for id {tgfp_nfl_game_id}")
 
-    try:
-        _update_player_win_loss(tgfp)
-    except UpdateWinLossException as exception:
-        logging.error(exception)
-        return
-
-    try:
-        _update_team_records(tgfp, nfl_data_source)
-    except UpdateWinLossException as exception:
-        logging.error(exception)
-        return
+    tgfp_game = games[0]
+    game_is_final: bool = _update_scores(nfl_data_source, tgfp_game)
+    _update_player_win_loss(tgfp)
+    _update_team_records(tgfp, nfl_data_source)
+    return game_is_final
 
 
-def _update_scores(tgfp, nfl_data_source):
-    nfl_games = nfl_data_source.games()
-    for nfl_game in nfl_games:
-        tgfp_g: TGFPGame = tgfp.find_games(tgfp_nfl_game_id=nfl_game.id)[0]
-        if not tgfp_g:
-            raise UpdateWinLossException("_update_scores: didn't find any games")
-        if not nfl_game.is_pregame:
-            logging.info("Games are in progress")
-            if tgfp_g:
-                if tgfp_g.home_team_score != int(nfl_game.total_home_points) or \
-                        tgfp_g.road_team_score != int(nfl_game.total_away_points) or \
-                        tgfp_g.game_status != nfl_game.game_status_type:
-                    tgfp_g.home_team_score = int(nfl_game.total_home_points)
-                    tgfp_g.road_team_score = int(nfl_game.total_away_points)
-                    tgfp_g.game_status = nfl_game.game_status_type
-                    logging.info("saving a game score")
-                if nfl_game.is_final:
-                    logging.info("Score is final")
+def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
+    """
+    Update the tgfp_game with the data from the nfl data source
+    @param nfl_data_source: current nfl game day data
+    @param tgfp_game: game to update
+    @return: True if game is final, otherwise, false
+    """
+    nfl_game = nfl_data_source.find_game(game_id=tgfp_game.tgfp_nfl_game_id)
+    if not nfl_game.is_pregame:
+        if tgfp_game.home_team_score != int(nfl_game.total_home_points) or \
+           tgfp_game.road_team_score != int(nfl_game.total_away_points) or \
+           tgfp_game.game_status != nfl_game.game_status_type:
+            tgfp_game.home_team_score = int(nfl_game.total_home_points)
+            tgfp_game.road_team_score = int(nfl_game.total_away_points)
+            tgfp_game.game_status = nfl_game.game_status_type
 
-        tgfp_g.save()
+    tgfp_game.save()
+    return tgfp_game.is_final
 
 
 def _update_player_win_loss(tgfp):
     active_players = tgfp.find_players(player_active=True)
-
     for player in active_players:
         picks = tgfp.find_picks(player_id=player.id)
         for pick in picks:
@@ -106,4 +90,5 @@ def this_weeks_games() -> List[TGFPGame]:
 
 
 if __name__ == '__main__':
-    update_win_loss()
+    for game in this_weeks_games():
+        update_win_loss(game.tgfp_nfl_game_id)

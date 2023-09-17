@@ -1,21 +1,25 @@
 """ This is the file that will be loaded by the container """
 import os
-from datetime import timedelta
+from datetime import timedelta, datetime
+from time import sleep
+from typing import List
+
 from prefect import flow, get_run_logger, serve
 from prefect.client.schemas.schedules import IntervalSchedule, CronSchedule
+from prefect.deployments import run_deployment
 from tgfp_lib import TGFPGame
 
 from db_backup import back_up_db
 from picks_create import create_picks
 # from win_loss_update import this_weeks_games, update_win_loss
-from players_nag import nag_players
-from scripts.win_loss_update import update_win_loss
+from players_nag import nag_players, get_first_game_of_the_week
+from scripts.win_loss_update import update_win_loss, this_weeks_games
 
 ENV: str = os.getenv('ENVIRONMENT')
 TZ: str = os.getenv('TZ')
 
 
-@flow
+@flow(name="backup-db")
 def run_backup_db():
     """Back up the database """
     logger = get_run_logger()
@@ -23,47 +27,57 @@ def run_backup_db():
     back_up_db()
 
 
-@flow
-def run_begin_week():
+@flow(name="begin-week")
+def run_begin_week(skip_create_picks: bool = False):
     """ Create the picks page, and schedule pause / resume jobs """
-    create_picks()
+    if skip_create_picks is False:
+        create_picks()
+    create_update_win_loss_schedule()
 
 
-@flow
-def run_update_win_loss():
+@flow(name="win-loss-update")
+def run_update_win_loss(tgfp_nfl_game_id: str):
     """ Update scores / win / loss / standings """
-    update_win_loss()
+    logger = get_run_logger()
+    game_is_final: bool = False
+    while game_is_final is not True:
+        logger.info("Updating game")
+        game_is_final = update_win_loss(tgfp_nfl_game_id)
+        sleep(300)
+    logger.info("Got a final for the game, exiting run flow")
 
 
-@flow
+@flow(name="nag-players")
 def run_nag_players():
     """ Nags the players re upcoming game """
     nag_players()
 
 
-# def create_update_win_loss_schedule():
-#     """ Every week go get the games, and add the jobs to the scheduler for each game """
-#     games: List[TGFPGame] = this_weeks_games()
-#     for game in games:
-#         start_date: datetime = game.pacific_start_time
-#         end_date: datetime = start_date + timedelta(hours=4, minutes=15)
-#         log_msg: str = f"Adding game monitor: {game.tgfp_nfl_game_id} for time {start_date}"
-#         logging.info(log_msg)
-# scheduler.add_job(
-#     run_update_win_loss,
-#     'interval',
-#     minutes=5,
-#     timezone=pytz.timezone(TZ),
-#     start_date=start_date,
-#     end_date=end_date,
-#     jitter=90,
-#     args=[game]
-# )
+@flow(name="create-update-game-schedule")
+def create_update_win_loss_schedule():
+    """ Every week go get the games, and add the jobs to the scheduler for each game """
+    logger = get_run_logger()
+    games: List[TGFPGame] = this_weeks_games()
+    for game in games:
+        start_date: datetime = game.pacific_start_time
+        log_msg: str = f"Adding game run flow: {game.tgfp_nfl_game_id} for time {start_date}"
+        logger.info(log_msg)
+        # run_deployment(
+        #     name="7e370338-a3b5-4cf6-944a-3708f53a82b7",
+        #     scheduled_time=game.pacific_start_time,
+        #     timeout=0,
+        #     parameters={"tgfp_nfl_game_id": game.tgfp_nfl_game_id},
+        #     flow_run_name=f"update-scores-game-{game.tgfp_nfl_game_id}"
+        # )
 
 
-# def create_nag_player_schedule():
-#     """ Creates the jobs to nag a player if they haven't done their picks"""
-    # first_game = get_first_game_of_the_week()
+@flow(name="create-nag-player-schedule")
+def create_nag_player_schedule():
+    """ Creates the jobs to nag a player if they haven't done their picks"""
+    logger = get_run_logger()
+    first_game = get_first_game_of_the_week()
+    logger.info(first_game.extra_info)
+    # run_depl
     # nag_date: datetime = first_game.pacific_start_time - timedelta(minutes=-45)
     # scheduler.add_job(run_nag_players, 'date', run_date=nag_date)
     # nag_date: datetime = first_game.pacific_start_time - timedelta(minutes=-20)
@@ -76,48 +90,35 @@ if __name__ == "__main__":
     # Create backup job deployment
     backup_db_deploy = run_backup_db.to_deployment(
         schedule=IntervalSchedule(interval=timedelta(minutes=30), timezone=TZ),
-        name="Back up DB",
+        name="back-up-db-deployment",
         description="Backs up the TGFP Database regularly",
-        version="0.3"
+        version="0.4"
     )
     begin_week_deploy = run_begin_week.to_deployment(
         schedule=CronSchedule(cron="0 6 * * 1", timezone=TZ),
-        name="Begin the Week",
+        name="begin-week-deployment",
         description="Creates the picks page, and triggers scheduling of games",
-        version="0.2"
+        version="0.3"
     )
     nag_players_deploy = run_nag_players.to_deployment(
-        name="Nag Players",
+        name="nag-players-deployment",
         description="Nag the players in the football pool to enter their picks",
-        version="0.1"
+        version="0.2"
     )
     update_win_loss_deploy = run_update_win_loss.to_deployment(
-        name="Update Win Loss Scores",
+        name="win-loss-update-deployment",
         description="Updates the scores and win/loss records",
-        version="0.2"
+        version="0.3"
+    )
+    create_update_win_loss_schedule_deploy = create_update_win_loss_schedule.to_deployment(
+        name="create-update-schedule-deployment",
+        description="Run manually to create the win/loss update schedule for the week",
+        version="1.0"
     )
     serve(
         backup_db_deploy,
         begin_week_deploy,
         nag_players_deploy,
-        update_win_loss_deploy
+        update_win_loss_deploy,
+        create_update_win_loss_schedule_deploy
     )
-    # load_all_jobs()
-    # # Let's add a schedule to ping healthchecks as long as we're up
-    # scheduler.add_job(
-    #     ping_healthchecks,
-    #     'interval',
-    #     minutes=SCHEDULE_HEALTH_CHECK_MINUTES,
-    #     args=['job-runner']
-    # )
-    # ping_healthchecks(slug='job-runner')
-    # scheduler.start()
-    # try:
-    #     client.loop_forever()
-    #     # start the mqtt listener
-    # except (KeyboardInterrupt, SystemExit):
-    #     pass
-    # finally:
-    #     scheduler.shutdown()
-    #     client.loop_stop()
-    #     client.disconnect()
