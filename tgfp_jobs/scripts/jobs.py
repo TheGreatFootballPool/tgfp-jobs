@@ -100,7 +100,7 @@ if __name__ == "__main__":
         version="0.4"
     )
     begin_week_deploy = run_begin_week.to_deployment(
-        schedule=CronSchedule(cron="0 6 * * 1", timezone=TZ),
+        schedule=CronSchedule(cron="0 6 * * 3", timezone=TZ),
         name="begin-week",
         description="Creates the picks page, and triggers scheduling of games",
         version="0.3"
