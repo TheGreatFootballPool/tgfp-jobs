@@ -1,6 +1,8 @@
 """ Take a game, and get the current scores from TgfpNfl and update the TGFP game """
 import os
 from typing import List
+
+from prefect import flow
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
@@ -20,6 +22,7 @@ class UpdateWinLossException(Exception):
         return f"Exception: {self.msg}"
 
 
+@flow
 def update_win_loss(tgfp_nfl_game_id: str) -> bool:
     """
     Update all the wins / losses / scores, etc...

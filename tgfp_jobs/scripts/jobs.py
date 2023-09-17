@@ -82,13 +82,25 @@ def create_nag_player_schedule():
     logger = get_run_logger()
     first_game = get_first_game_of_the_week()
     logger.info(first_game.extra_info)
-    # run_depl
-    # nag_date: datetime = first_game.pacific_start_time - timedelta(minutes=-45)
-    # scheduler.add_job(run_nag_players, 'date', run_date=nag_date)
-    # nag_date: datetime = first_game.pacific_start_time - timedelta(minutes=-20)
-    # scheduler.add_job(run_nag_players, 'date', run_date=nag_date)
-    # nag_date: datetime = first_game.pacific_start_time - timedelta(minutes=-5)
-    # scheduler.add_job(run_nag_players, 'date', run_date=nag_date)
+    scheduled_date: datetime = first_game.pacific_start_time
+    run_deployment(
+        name="nag-players/nag",
+        scheduled_time=scheduled_date - timedelta(minutes=-45),
+        timeout=0,
+        flow_run_name="Nag Players 1"
+    )
+    run_deployment(
+        name="nag-players/nag",
+        scheduled_time=scheduled_date - timedelta(minutes=-20),
+        timeout=0,
+        flow_run_name="Nag Players 2"
+    )
+    run_deployment(
+        name="nag-players/nag",
+        scheduled_time=scheduled_date - timedelta(minutes=-5),
+        timeout=0,
+        flow_run_name="Nag Players Last Call"
+    )
 
 
 if __name__ == "__main__":
@@ -120,10 +132,16 @@ if __name__ == "__main__":
         description="Run manually to create the win/loss update schedule for the week",
         version="1.0"
     )
+    create_nag_player_schedule_deploy = create_nag_player_schedule.to_deployment(
+        name="schedule-nag-flows",
+        description="Run manually to create the nag player schedule for the week",
+        version="1.0"
+    )
     serve(
         backup_db_deploy,
         begin_week_deploy,
         nag_players_deploy,
         update_win_loss_deploy,
-        create_update_win_loss_schedule_deploy
+        create_update_win_loss_schedule_deploy,
+        create_nag_player_schedule_deploy
     )
