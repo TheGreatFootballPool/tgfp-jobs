@@ -1,6 +1,7 @@
 """ This is the file that will be loaded by the container """
 import os
 from datetime import timedelta, datetime
+from random import randrange
 from time import sleep
 from typing import List
 
@@ -58,8 +59,10 @@ def create_update_win_loss_schedule():
     """ Every week go get the games, and add the jobs to the scheduler for each game """
     logger = get_run_logger()
     games: List[TGFPGame] = this_weeks_games()
+    jitter: int = randrange(1, 100)
     for game in games:
-        start_date: datetime = game.pacific_start_time
+        jitter = randrange(1, 100)
+        start_date: datetime = game.pacific_start_time - timedelta(seconds=jitter)
         log_msg: str = f"Adding game run flow: {game.tgfp_nfl_game_id} for time {start_date}"
         logger.info(log_msg)
         run_deployment(
