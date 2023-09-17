@@ -2,7 +2,7 @@
 import os
 from typing import List
 
-from prefect import flow
+from prefect import flow, get_run_logger
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
@@ -22,7 +22,6 @@ class UpdateWinLossException(Exception):
         return f"Exception: {self.msg}"
 
 
-@flow
 def update_win_loss(tgfp_nfl_game_id: str) -> bool:
     """
     Update all the wins / losses / scores, etc...
@@ -60,6 +59,8 @@ def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
             tgfp_game.game_status = nfl_game.game_status_type
 
     tgfp_game.save()
+    logger = get_run_logger()
+    logger.info("Game state: " + game.game_status)
     return tgfp_game.is_final
 
 
