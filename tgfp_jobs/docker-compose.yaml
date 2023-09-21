@@ -5,43 +5,7 @@ services:
     env_file:
       - stack.env
     restart: unless-stopped
-    command: prefect worker start --pool 'tgfp-jobs'
+    entrypoint: prefect worker start --pool 'tgfp-jobs'
     volumes:
-      - $TGFP_HOME/tgfp_jobs/scripts:/app/scripts
-      - $HOST_BACKUP_DIR:/backup
-    depends_on:
-      tgfp-mongodb:
-        condition: service_started
-  tgfp-web:
-    image: johnofcamas/tgfp-web:latest
-    container_name: tgfp-web
-    restart: unless-stopped
-    command: gunicorn -b 0.0.0.0:$WEB_PORT app:app
-    env_file:
-      - stack.env
-    ports:
-      - "$WEB_PORT:$WEB_PORT"
-    depends_on:
-      tgfp-mongodb:
-        condition: service_started
-  tgfp-mongodb:
-    image: mongo:6
-    env_file:
-      - stack.env
-    restart: unless-stopped
-    container_name: tgfp-mongodb
-    hostname: mongo
-    ports:
-      - "${MONGO_PORT}:${MONGO_PORT}"
-    volumes:
-      - tgfp-db:/data/db
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:${MONGO_PORT}/ --quiet
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
-
-volumes:
-  tgfp-db:
-    external: true
+      - ./scripts:/app/scripts
+      - /tmp:/backup
