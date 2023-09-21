@@ -18,7 +18,7 @@ pull:
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
 - name: create-picks
-  version: 6.16.2
+  version: 6.16.3
   tags: []
   description: 'Creates the weekly picks page'
   schedule:
@@ -34,7 +34,7 @@ deployments:
   - prefect.deployments.steps.set_working_directory:
       directory: /app/scripts
 - name: backup-db
-  version: 6.16.2
+  version: 6.16.3
   tags: []
   description: 'DB Backup Deployment'
   schedule:
@@ -50,7 +50,7 @@ deployments:
   - prefect.deployments.steps.set_working_directory:
       directory: /app/scripts
 - name: job-schedule-game-updates
-  version: 6.16.2
+  version: 6.16.3
   tags: []
   description: 'Schedule all of the jobs that will update the scores for the week'
   entrypoint: job_scheduler.py:schedule_game_updates
@@ -63,7 +63,7 @@ deployments:
   - prefect.deployments.steps.set_working_directory:
       directory: /app/scripts
 - name: job-schedule-player-nag
-  version: 6.16.2
+  version: 6.16.3
   tags: []
   description: 'Schedule all of the jobs that will update the scores for the week'
   entrypoint: job_scheduler.py:schedule_player_nag
@@ -75,11 +75,11 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory:
       directory: /app/scripts
-- name: nag-players
-  version: 6.16.2
+- name: nag-all-players
+  version: 6.16.3
   tags: []
   description: 'Nag Players that did not do their picks'
-  entrypoint: nag_players.py:nag_players
+  entrypoint: nag_players.py:nag_the_players
   parameters: {}
   work_pool:
     name: tgfp-jobs
@@ -89,7 +89,7 @@ deployments:
   - prefect.deployments.steps.set_working_directory:
       directory: /app/scripts
 - name: update-game-scores
-  version: 6.16.2
+  version: 6.16.3
   tags: []
   description: 'Update the scores'
   entrypoint: update_game_score.py:run_update_game

@@ -22,7 +22,7 @@ def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
 
 
 @flow
-def nag_players():
+def nag_the_players():
     """ Nag the players that didn't do their picks """
     logger = get_run_logger()
     mongo_uri: str = helpers.get_secret('mongo-uri')
