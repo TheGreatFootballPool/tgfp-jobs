@@ -5,6 +5,7 @@ services:
     env_file:
       - stack.env
     restart: unless-stopped
+    command: prefect worker start --pool 'tgfp-jobs'
     volumes:
       - $TGFP_HOME/tgfp_jobs/scripts:/app/scripts
       - $MONGO_HOST_BACKUP_DIR:/backup

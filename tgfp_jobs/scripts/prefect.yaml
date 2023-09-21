@@ -1,0 +1,104 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
+name: tgfp_jobs
+prefect-version: 2.13.1
+
+# build section allows you to manage and build docker images
+build:
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push:
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: create-picks
+  version: 6.16.1
+  tags: []
+  description: 'Creates the weekly picks page'
+  schedule:
+    cron: 0 6 * * 3
+    timezone: US/Pacific
+  entrypoint: create_picks.py:create_picks
+  parameters: {}
+  work_pool:
+    name: tgfp-jobs
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/johnsturgeon/Code/tgfp/tgfp_jobs/scripts
+- name: backup-db
+  version: 6.16.1
+  tags: []
+  description: 'DB Backup Deployment'
+  schedule:
+    interval: 1800.0
+    timezone: US/Pacific
+  entrypoint: db_backup.py:back_up_db
+  parameters: {}
+  work_pool:
+    name: tgfp-jobs
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/johnsturgeon/Code/tgfp/tgfp_jobs/scripts
+- name: job-schedule-game-updates
+  version: 6.16.1
+  tags: []
+  description: 'Schedule all of the jobs that will update the scores for the week'
+  entrypoint: job_scheduler.py:schedule_game_updates
+  parameters: {}
+  work_pool:
+    name: tgfp-jobs
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/johnsturgeon/Code/tgfp/tgfp_jobs/scripts
+- name: job-schedule-player-nag
+  version: 6.16.1
+  tags: []
+  description: 'Schedule all of the jobs that will update the scores for the week'
+  entrypoint: job_scheduler.py:schedule_player_nag
+  parameters: {}
+  work_pool:
+    name: tgfp-jobs
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/johnsturgeon/Code/tgfp/tgfp_jobs/scripts
+- name: nag-players
+  version: 6.16.1
+  tags: []
+  description: 'Nag Players that did not do their picks'
+  entrypoint: nag_players.py:nag_players
+  parameters: {}
+  work_pool:
+    name: tgfp-jobs
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/johnsturgeon/Code/tgfp/tgfp_jobs/scripts
+- name: update-game-scores
+  version: 6.16.1
+  tags: []
+  description: 'Update the scores'
+  entrypoint: update_game_score.py:run_update_game
+  parameters:
+    tgfp_nfl_game_id: No game id given
+  work_pool:
+    name: tgfp-jobs
+    work_queue_name:
+    job_variables: {}
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /Users/johnsturgeon/Code/tgfp/tgfp_jobs/scripts

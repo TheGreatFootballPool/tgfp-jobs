@@ -1,15 +1,12 @@
 """ Take a game, and get the current scores from TgfpNfl and update the TGFP game """
-import os
+from time import sleep
 from typing import List
 
 from prefect import flow, get_run_logger
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
-from scripts.prefect_helpers import helpers
-
-MONGO_URI: str = helpers.get_secret('mongo-uri')
-TZ = os.getenv('TZ')
+from prefect_helpers import helpers
 
 
 class UpdateWinLossException(Exception):
@@ -22,13 +19,27 @@ class UpdateWinLossException(Exception):
         return f"Exception: {self.msg}"
 
 
-def update_win_loss(tgfp_nfl_game_id: str) -> bool:
+@flow(flow_run_name="update-game-{tgfp_nfl_game_id}")
+def run_update_game(tgfp_nfl_game_id: str):
+    """ Update scores / win / loss / standings """
+    logger = get_run_logger()
+    game_is_final: bool = update_game(tgfp_nfl_game_id)
+    while not game_is_final:
+        logger.info("Updating game")
+        sleep(300)
+        game_is_final = update_game(tgfp_nfl_game_id)
+    logger.info("Got a final for the game, exiting run flow")
+
+
+def update_game(tgfp_nfl_game_id: str) -> bool:
     """
     Update all the wins / losses / scores, etc...
     @param tgfp_nfl_game_id:
     @return: True if game is final, otherwise False
     """
-    tgfp = TGFP(MONGO_URI)
+    mongo_uri: str = helpers.get_secret('mongo-uri')
+
+    tgfp = TGFP(mongo_uri)
     week_no = tgfp.current_week()
     nfl_data_source = TgfpNfl(week_no=week_no)
     games: List[TGFPGame] = tgfp.find_games(tgfp_nfl_game_id=tgfp_nfl_game_id)
@@ -87,13 +98,10 @@ def _update_team_records(tgfp, nfl_data_source):
 #  Helper function
 def this_weeks_games() -> List[TGFPGame]:
     """ Get this week's games """
-    tgfp = TGFP(MONGO_URI)
+    mongo_uri: str = helpers.get_secret('mongo-uri')
+
+    tgfp = TGFP(mongo_uri)
     return tgfp.find_games(
         week_no=tgfp.current_week(),
         season=tgfp.current_season()
     )
-
-
-if __name__ == '__main__':
-    for game in this_weeks_games():
-        update_win_loss(game.tgfp_nfl_game_id)

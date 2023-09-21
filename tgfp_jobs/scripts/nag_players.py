@@ -5,43 +5,47 @@ from typing import Optional, List
 import logging
 import arrow
 import hikari
+from prefect import flow, get_run_logger
 from tgfp_lib import TGFP, TGFPPlayer, TGFPGame
 
-from scripts.prefect_helpers import helpers
-
-MONGO_URI: str = helpers.get_secret('mongo-uri')
-DISCORD_AUTH_TOKEN: str = helpers.get_secret('discord-auth-token', use_env=False)
-GUILD_NAME: str = helpers.get_secret('guild_name', is_var=True)
+from prefect_helpers import helpers
 
 
 def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
     """ Returns the 'first' game of the week """
     if tgfp is None:
-        tgfp = TGFP(MONGO_URI)
+        mongo_uri: str = helpers.get_secret('mongo-uri')
+        tgfp = TGFP(mongo_uri)
     games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
     games.sort(key=lambda x: x.start_time, reverse=True)
     return games[-1]
 
 
+@flow
 def nag_players():
     """ Nag the players that didn't do their picks """
+    logger = get_run_logger()
+    mongo_uri: str = helpers.get_secret('mongo-uri')
+    discord_auth_token: str = helpers.get_secret('discord-auth-token', use_env=False)
+    guid_name: str = helpers.get_secret('guild_name', is_var=True)
+
     bot: hikari.GatewayBot = hikari.GatewayBot(
-        token=DISCORD_AUTH_TOKEN,
+        token=discord_auth_token,
         intents=hikari.Intents.ALL
     )
 
     @bot.listen(hikari.GuildAvailableEvent)
     async def guild_available(event: hikari.GuildAvailableEvent):
-        """ Run when guid is available """
-        tgfp = TGFP(MONGO_URI)
+        """ Run when guild is available """
+        tgfp = TGFP(mongo_uri)
         first_game: TGFPGame = get_first_game_of_the_week(tgfp)
         game_1_start = arrow.get(first_game.start_time)
-        print(game_1_start)
-        print(arrow.utcnow())
+        logger.info(game_1_start)
+        logger.info(arrow.utcnow())
         delta: datetime.timedelta = game_1_start - arrow.utcnow()
         kickoff_in_minutes: int = round(delta.seconds / 60)
 
-        if event.guild.name == GUILD_NAME:
+        if event.guild.name == guid_name:
             # first get the text channel handle
             text_channel: Optional[hikari.TextableChannel] = None
             channel: hikari.TextableChannel
@@ -56,6 +60,7 @@ def nag_players():
                 if not member.is_bot:
                     player: TGFPPlayer = tgfp.find_players(discord_id=member.id)[0]
                     if player.active and not player.this_weeks_picks():
+                        logger.info("Nagging %s", player.full_name())
                         late_players.append(player)
 
             if late_players:
@@ -71,6 +76,3 @@ def nag_players():
 
     logging.info("About to nag some players")
     bot.run()
-
-if __name__ == '__main__':
-    nag_players()
