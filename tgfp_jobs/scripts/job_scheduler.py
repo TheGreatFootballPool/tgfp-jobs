@@ -39,19 +39,19 @@ def schedule_player_nag():
     logger.info(first_game.extra_info)
     scheduled_date: datetime = first_game.pacific_start_time
     run_deployment(
-        name="nag-players/nag-players",
+        name="nag-the-players/nag-all-players",
         scheduled_time=scheduled_date - timedelta(minutes=-45),
         timeout=0,
         flow_run_name="Nag Players 1"
     )
     run_deployment(
-        name="nag-players/nag-players",
+        name="nag-the-players/nag-all-players",
         scheduled_time=scheduled_date - timedelta(minutes=-20),
         timeout=0,
         flow_run_name="Nag Players 2"
     )
     run_deployment(
-        name="nag-players/nag-players",
+        name="nag-the-players/nag-all-players",
         scheduled_time=scheduled_date - timedelta(minutes=-5),
         timeout=0,
         flow_run_name="Nag Players Last Call"
