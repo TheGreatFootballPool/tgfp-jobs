@@ -42,17 +42,17 @@ def schedule_player_nag():
         name="nag-the-players/nag-all-players",
         scheduled_time=scheduled_date - timedelta(minutes=-45),
         timeout=0,
-        flow_run_name="Nag Players 1"
+        flow_run_name="nag-1"
     )
     run_deployment(
         name="nag-the-players/nag-all-players",
         scheduled_time=scheduled_date - timedelta(minutes=-20),
         timeout=0,
-        flow_run_name="Nag Players 2"
+        flow_run_name="nag-2"
     )
     run_deployment(
         name="nag-the-players/nag-all-players",
         scheduled_time=scheduled_date - timedelta(minutes=-5),
         timeout=0,
-        flow_run_name="Nag Players Last Call"
+        flow_run_name="nag-3"
     )
