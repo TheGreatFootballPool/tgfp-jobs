@@ -8,7 +8,7 @@ services:
     command: prefect worker start --pool 'tgfp-jobs'
     volumes:
       - $TGFP_HOME/tgfp_jobs/scripts:/app/scripts
-      - $MONGO_HOST_BACKUP_DIR:/backup
+      - $HOST_BACKUP_DIR:/backup
     depends_on:
       tgfp-mongodb:
         condition: service_started
