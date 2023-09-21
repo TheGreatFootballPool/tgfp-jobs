@@ -2,6 +2,7 @@
   "back-up-db": "db_backup.py:back_up_db",
   "create-picks": "create_picks.py:create_picks",
   "nag-players": "nag_players.py:nag_players",
+  "nag-the-players": "nag_players.py:nag_the_players",
   "run-update-game": "update_game_score.py:run_update_game",
   "schedule-game-updates": "job_scheduler.py:schedule_game_updates",
   "schedule-player-nag": "job_scheduler.py:schedule_player_nag"
