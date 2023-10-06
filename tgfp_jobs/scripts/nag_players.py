@@ -8,14 +8,15 @@ import hikari
 from prefect import flow, get_run_logger
 from tgfp_lib import TGFP, TGFPPlayer, TGFPGame
 
-from prefect_helpers import helpers
+from config import get_config
 
 
 def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
     """ Returns the 'first' game of the week """
+    config = get_config()
+
     if tgfp is None:
-        mongo_uri: str = helpers.get_secret('mongo-uri')
-        tgfp = TGFP(mongo_uri)
+        tgfp = TGFP(config.MONGO_URI)
     games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
     games.sort(key=lambda x: x.start_time, reverse=True)
     return games[-1]
@@ -25,19 +26,17 @@ def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
 def nag_the_players():
     """ Nag the players that didn't do their picks """
     logger = get_run_logger()
-    mongo_uri: str = helpers.get_secret('mongo-uri')
-    discord_auth_token: str = helpers.get_secret('discord-auth-token', use_env=False)
-    guid_name: str = helpers.get_secret('guild_name', is_var=True)
+    config = get_config()
 
     bot: hikari.GatewayBot = hikari.GatewayBot(
-        token=discord_auth_token,
+        token=config.DISCORD_AUTH_TOKEN,
         intents=hikari.Intents.ALL
     )
 
     @bot.listen(hikari.GuildAvailableEvent)
     async def guild_available(event: hikari.GuildAvailableEvent):
         """ Run when guild is available """
-        tgfp = TGFP(mongo_uri)
+        tgfp = TGFP(config.MONGO_URI)
         first_game: TGFPGame = get_first_game_of_the_week(tgfp)
         game_1_start = arrow.get(first_game.start_time)
         logger.info(game_1_start)
@@ -45,7 +44,7 @@ def nag_the_players():
         delta: datetime.timedelta = game_1_start - arrow.utcnow()
         kickoff_in_minutes: int = round(delta.seconds / 60)
 
-        if event.guild.name == guid_name:
+        if event.guild.name == config.DISCORD_GUILD_NAME:
             # first get the text channel handle
             text_channel: Optional[hikari.TextableChannel] = None
             channel: hikari.TextableChannel
@@ -71,8 +70,17 @@ def nag_the_players():
                 message += " Go to https://tgfp.us/picks and get 'em in!"
                 message += f"\nKickoff of first game is in {kickoff_in_minutes} minutes!"
                 await text_channel.send(content=message, user_mentions=True)
+            else:
+                logger.info("No players to nag")
+                if config.ENVIRONMENT == "development":
+                    message = "No players to nag"
+                    await text_channel.send(content=message, user_mentions=True)
             await asyncio.sleep(2)
             await bot.close()
 
     logging.info("About to nag some players")
     bot.run()
+
+
+if __name__ == '__main__':
+    nag_the_players()

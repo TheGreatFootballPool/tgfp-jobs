@@ -5,27 +5,25 @@ import subprocess
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
 from prefect import get_run_logger, flow
-from prefect_helpers import helpers
+
+from config import get_config
 
 
 @flow
 def back_up_db():
     """ Back up the database """
     logger = get_run_logger()
-    backup_dir = helpers.get_secret('backup_dir', is_var=True)
-    username = helpers.get_secret('mongo-root-username')
-    password = helpers.get_secret('mongo-root-password')
-    hostname = helpers.get_secret('mongo_host', is_var=True)
+    config = get_config()
 
-    filename = f"{backup_dir}/tgfp"
+    filename = f"{config.BACKUP_DIR}/tgfp"
     cmd = [
         "mongodump",
         "--username",
-        username,
+        config.MONGO_ROOT_USERNAME,
         "--password",
-        password,
+        config.MONGO_ROOT_PASSWORD,
         "--host",
-        f"{hostname}:27017",
+        f"{config.MONGO_HOST}:27017",
         "--gzip",
         f"--archive={filename}"
     ]

@@ -19,6 +19,7 @@ listmonk-api = "^0.1.2"
 apscheduler = "^3.10.4"
 paho-mqtt = "^1.6.1"
 prefect = "^2.13.1"
+greenlet = "^3.0.0"
 
 
 [build-system]

@@ -6,8 +6,9 @@ from prefect import flow, get_run_logger
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
-from prefect_helpers import helpers
+from config import get_config
 
+config = get_config()
 
 class UpdateWinLossException(Exception):
     """ Throw an exception """
@@ -37,9 +38,8 @@ def update_game(tgfp_nfl_game_id: str) -> bool:
     @param tgfp_nfl_game_id:
     @return: True if game is final, otherwise False
     """
-    mongo_uri: str = helpers.get_secret('mongo-uri')
 
-    tgfp = TGFP(mongo_uri)
+    tgfp = TGFP(config.MONGO_URI)
     week_no = tgfp.current_week()
     nfl_data_source = TgfpNfl(week_no=week_no)
     games: List[TGFPGame] = tgfp.find_games(tgfp_nfl_game_id=tgfp_nfl_game_id)
@@ -98,9 +98,7 @@ def _update_team_records(tgfp, nfl_data_source):
 #  Helper function
 def this_weeks_games() -> List[TGFPGame]:
     """ Get this week's games """
-    mongo_uri: str = helpers.get_secret('mongo-uri')
-
-    tgfp = TGFP(mongo_uri)
+    tgfp = TGFP(config.MONGO_URI)
     return tgfp.find_games(
         week_no=tgfp.current_week(),
         season=tgfp.current_season()

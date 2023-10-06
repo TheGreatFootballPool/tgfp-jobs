@@ -4,7 +4,10 @@ from typing import List
 from prefect import get_run_logger, flow
 from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
-from prefect_helpers import helpers
+
+from config import get_config
+
+config = get_config()
 
 
 class CreatePicksException(Exception):
@@ -21,7 +24,7 @@ class CreatePicksException(Exception):
 def create_picks():
     """ Creates the weekly picks page """
     logger = get_run_logger()
-    mongo_uri = helpers.get_secret('mongo-uri')
+    mongo_uri = config.MONGO_URI
     tgfp = TGFP(mongo_uri)
     tgfp_teams = tgfp.teams()
     week_no = tgfp.current_week()
