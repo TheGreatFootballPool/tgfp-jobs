@@ -20,7 +20,7 @@ git add .
 git commit -m "$2"
 git push
 git tag v${NEW_VERSION}
-git push origin ${NEW_VERSION}
+git push origin v${NEW_VERSION}
 cd $SCRIPTS_DIR
 
 echo "==== Pushing code to server production server ===="
@@ -28,7 +28,7 @@ ssh goshdarnedserver.lan 'cd ~/tgfp ; git pull --rebase'
 
 # Building the stack environment file
 op inject -f -i op.env -o stack.env
-source stack.env
+source ./stack.env
 
 echo "==== Deploying production flows to prefect ===="
 prefect --no-prompt deploy -n '*-prod'
