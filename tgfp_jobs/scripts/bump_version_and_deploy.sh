@@ -8,6 +8,7 @@ echo "==== Setting up environment and moving to top level dir  ===="
 # Get scripts dir, and cd there
 SCRIPTS_DIR="$(dirname "$0")"
 cd $SCRIPTS_DIR
+echo $SCRIPTS_DIR
 
 echo "==== Getting poetry version ===="
 poetry version $1
