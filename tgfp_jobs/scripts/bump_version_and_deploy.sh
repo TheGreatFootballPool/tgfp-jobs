@@ -26,6 +26,7 @@ cd $SCRIPTS_DIR
 echo "==== Pushing code to server production server ===="
 ssh goshdarnedserver.lan 'cd ~/tgfp ; git pull --rebase'
 
+set -o xv
 # Building the stack environment file
 op inject -f -i $SCRIPTS_DIR/op.env -o $SCRIPTS_DIR/stack.env
 source $SCRIPTS_DIR/stack.env

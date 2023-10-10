@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tgfp"
-version = "10.0.5"
+version = "10.0.6"
 description = "Scripts to help with the running of The Great Football Pool"
 authors = ["John Sturgeon <john.sturgeon@me.com>"]
 license = "MIT"
