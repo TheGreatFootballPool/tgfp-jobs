@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # usage: [major, minor, patch] "commit message"
 # Get poetry version
+set -o allexport
 export ENVIRONMENT=production
 echo "==== Setting up environment and moving to top level dir  ===="
 
@@ -10,7 +11,7 @@ cd $SCRIPTS_DIR
 
 echo "==== Getting poetry version ===="
 poetry version $1
-export NEW_VERSION=`poetry version -s`
+NEW_VERSION=`poetry version -s`
 echo "==== Poetry version: $NEW_VERSION ===="
 
 echo "==== Adding / committing / tagging ===="
@@ -27,7 +28,6 @@ ssh goshdarnedserver.lan 'cd ~/tgfp ; git pull --rebase'
 
 # Building the stack environment file
 op inject -f -i op.env -o stack.env
-set -o allexport
 source stack.env
 
 echo "==== Deploying production flows to prefect ===="
