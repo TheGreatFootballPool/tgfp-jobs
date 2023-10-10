@@ -27,8 +27,8 @@ echo "==== Pushing code to server production server ===="
 ssh goshdarnedserver.lan 'cd ~/tgfp ; git pull --rebase'
 
 # Building the stack environment file
-op inject -f -i op.env -o stack.env
-source ./stack.env
+op inject -f -i $SCRIPTS_DIR/op.env -o $SCRIPTS_DIR/stack.env
+source $SCRIPTS_DIR/stack.env
 
 echo "==== Deploying production flows to prefect ===="
 prefect --no-prompt deploy -n '*-prod'
