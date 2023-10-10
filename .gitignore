@@ -103,7 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
-stack.env
+tgfp_jobs/scripts/stack.env
 .venv
 env/
 venv/
