@@ -6,8 +6,8 @@ export ENVIRONMENT=production
 echo "==== Setting up environment and moving to top level dir  ===="
 
 # Get scripts dir, and cd there
-SCRIPTS_DIR="$(dirname "$0")"
-cd $SCRIPTS_DIR
+cd "$(dirname "$0")"
+SCRIPTS_DIR="$(pwd)"
 echo $SCRIPTS_DIR
 
 echo "==== Getting poetry version ===="
