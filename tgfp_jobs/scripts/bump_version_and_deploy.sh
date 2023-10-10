@@ -1,7 +1,7 @@
 #!/bin/bash
 # usage: [major, minor, patch] "commit message"
 poetry version $1
-git add .
+git add ../../
 git commit -m "$2"
 git push
 export NEW_VERSION=`poetry version -s`
