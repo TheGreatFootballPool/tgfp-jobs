@@ -26,7 +26,7 @@ definitions:
 deployments:
 # Production deployments deploy with '*-prod'
 - name: create-picks-prod
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [production]
   description: 'Creates the weekly picks page'
   schedule:
@@ -38,7 +38,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-prod
 - name: backup-db-prod
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [production]
   description: 'DB Backup Deployment'
   schedule:
@@ -50,7 +50,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-prod
 - name: job-schedule-game-updates-prod
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [production]
   description: 'Schedule all of the jobs that will update the scores for the week'
   entrypoint: job_scheduler.py:schedule_game_updates
@@ -59,7 +59,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-prod
 - name: job-schedule-player-nag-prod
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [production]
   description: 'Schedule all of the jobs that will update the scores for the week'
   entrypoint: job_scheduler.py:schedule_player_nag
@@ -68,7 +68,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-prod
 - name: nag-all-players-prod
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [production]
   description: 'Nag Players that did not do their picks'
   entrypoint: nag_players.py:nag_the_players
@@ -77,7 +77,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-prod
 - name: update-game-scores-prod
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [production]
   description: 'Update the scores'
   entrypoint: update_game_score.py:run_update_game
@@ -90,7 +90,7 @@ deployments:
 
 # Development deployments, deploy with '*-dev'
 - name: create-picks-dev
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [development]
   description: 'Creates the weekly picks page'
   entrypoint: create_picks.py:create_picks
@@ -99,7 +99,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-dev
 - name: backup-db-dev
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [development]
   description: 'DB Backup Deployment'
   entrypoint: db_backup.py:back_up_db
@@ -108,7 +108,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-dev
 - name: job-schedule-game-updates-dev
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [development]
   description: 'Schedule all of the jobs that will update the scores for the week'
   entrypoint: job_scheduler.py:schedule_game_updates
@@ -117,7 +117,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-dev
 - name: job-schedule-player-nag-dev
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [development]
   description: 'Schedule all of the jobs that will update the scores for the week'
   entrypoint: job_scheduler.py:schedule_player_nag
@@ -126,7 +126,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-dev
 - name: nag-all-players-dev
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [development]
   description: 'Nag Players that did not do their picks'
   entrypoint: nag_players.py:nag_the_players
@@ -135,7 +135,7 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory: *path-dev
 - name: update-game-scores-dev
-  version: {{ $NEW_VERSION }}
+  version: "{{ $NEW_VERSION }}"
   tags: [development]
   description: 'Update the scores'
   entrypoint: update_game_score.py:run_update_game

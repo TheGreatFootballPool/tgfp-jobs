@@ -2,7 +2,7 @@
 # usage: [major, minor, patch] "commit message"
 # Get poetry version
 set -o allexport
-export ENVIRONMENT=production
+ENVIRONMENT=production
 echo "==== Setting up environment and moving to top level dir  ===="
 
 # Get scripts dir, and cd there
