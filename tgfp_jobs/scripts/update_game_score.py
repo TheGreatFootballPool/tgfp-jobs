@@ -29,6 +29,10 @@ def run_update_game(tgfp_nfl_game_id: str):
         logger.info("Updating game")
         sleep(300)
         game_is_final = update_game(tgfp_nfl_game_id)
+    # Wait 1 minute, then update the team records before exiting
+    logger.info("Game is done, waiting 1 minute, updating scores, then exiting...")
+    sleep(60)
+    update_game(tgfp_nfl_game_id)
     logger.info("Got a final for the game, exiting run flow")
 
 
