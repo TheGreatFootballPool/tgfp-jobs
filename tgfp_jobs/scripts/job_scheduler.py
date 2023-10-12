@@ -23,7 +23,7 @@ def schedule_game_updates():
         log_msg: str = f"Adding game run flow: {game.tgfp_nfl_game_id} for time {start_date}"
         logger.info(log_msg)
         run_deployment(
-            name="run-update-game/update-game-scores",
+            name="run-update-game/update-game-scores-prod",
             scheduled_time=start_date,
             timeout=0,
             parameters={"tgfp_nfl_game_id": game.tgfp_nfl_game_id},
@@ -39,19 +39,19 @@ def schedule_player_nag():
     logger.info(first_game.extra_info)
     scheduled_date: datetime = first_game.pacific_start_time
     run_deployment(
-        name="nag-the-players/nag-all-players",
+        name="nag-the-players/nag-all-players-prod",
         scheduled_time=scheduled_date - timedelta(minutes=45),
         timeout=0,
         flow_run_name="nag-1"
     )
     run_deployment(
-        name="nag-the-players/nag-all-players",
+        name="nag-the-players/nag-all-players-prod",
         scheduled_time=scheduled_date - timedelta(minutes=20),
         timeout=0,
         flow_run_name="nag-2"
     )
     run_deployment(
-        name="nag-the-players/nag-all-players",
+        name="nag-the-players/nag-all-players-prod",
         scheduled_time=scheduled_date - timedelta(minutes=5),
         timeout=0,
         flow_run_name="nag-3"
