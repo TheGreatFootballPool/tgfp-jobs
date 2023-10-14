@@ -24,6 +24,9 @@ class Config:
     DISCORD_GUILD_NAME: str = helper.get_variable('discord_guild_name')
     BACKUP_DIR = helper.get_variable('backup_dir')
     SECRET_KEY = helper.get_secret('web-secret-key')
+    LISTMONK_AUTH_HASH = helper.get_variable('listmonk_auth_hash')
+    LISTMONK_LIST_ID = helper.get_variable('listmonk_list_id')
+    LISTMONK_API_URL = helper.get_variable('listmonk_api_url')
 
 
 def get_config():

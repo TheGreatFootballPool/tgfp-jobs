@@ -6,7 +6,7 @@ from tgfp_lib import TGFP, TGFPGame
 from tgfp_nfl import TgfpNfl
 
 from config import get_config
-
+from send_picks_ready_campaign import send_campaign_email
 config = get_config()
 
 
@@ -61,3 +61,5 @@ def create_picks():
         all_json.append(tgfp_game.mongo_data())
         logger.info(tgfp_game.mongo_data())
         tgfp_game.save()
+
+    send_campaign_email(week_no)

@@ -23,4 +23,4 @@ prefect --no-prompt deploy -n '*-dev'
 set +o allexport
 
 echo "==== Starting dev worker pool ===="
-prefect worker start --pool 'tgfp-development'
+prefect worker start --pool 'tgfp-jobs'
