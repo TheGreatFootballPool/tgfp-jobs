@@ -10,6 +10,7 @@ from config import get_config
 
 config = get_config()
 
+
 class UpdateWinLossException(Exception):
     """ Throw an exception """
     def __init__(self, msg, *args):
@@ -24,13 +25,13 @@ class UpdateWinLossException(Exception):
 def run_update_game(tgfp_nfl_game_id: str):
     """ Update scores / win / loss / standings """
     logger = get_run_logger()
-    game_is_final: bool = update_game(tgfp_nfl_game_id)
-    while not game_is_final:
+    done_updating: bool = update_game(tgfp_nfl_game_id)
+    while not done_updating:
         logger.info("Updating game")
         sleep(300)
-        game_is_final = update_game(tgfp_nfl_game_id)
+        done_updating = update_game(tgfp_nfl_game_id)
     # Wait 1 minute, then update the team records before exiting
-    logger.info("Game is done, waiting 1 minute, updating scores, then exiting...")
+    logger.info("Game is done, waiting 1 minute, updating team records, then exiting...")
     sleep(60)
     tgfp = TGFP(config.MONGO_URI)
     nfl_data_source = TgfpNfl(week_no=tgfp.current_week())
@@ -53,10 +54,10 @@ def update_game(tgfp_nfl_game_id: str) -> bool:
         raise UpdateWinLossException(f"We should have found a game for id {tgfp_nfl_game_id}")
 
     tgfp_game = games[0]
-    game_is_final: bool = _update_scores(nfl_data_source, tgfp_game)
+    done_updating: bool = _update_scores(nfl_data_source, tgfp_game)
     _update_player_win_loss(tgfp)
     _update_team_records(tgfp, nfl_data_source)
-    return game_is_final
+    return done_updating
 
 
 def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
@@ -68,6 +69,8 @@ def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
     """
     logger = get_run_logger()
     nfl_game = nfl_data_source.find_game(game_id=tgfp_game.tgfp_nfl_game_id)
+    if nfl_game is None:
+        return True  # Finished updating scores
     if not nfl_game.is_pregame:
         if tgfp_game.home_team_score != int(nfl_game.total_home_points) or \
            tgfp_game.road_team_score != int(nfl_game.total_away_points) or \
