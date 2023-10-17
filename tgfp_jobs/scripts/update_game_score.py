@@ -36,7 +36,7 @@ def run_update_game(tgfp_nfl_game_id: str):
     tgfp = TGFP(config.MONGO_URI)
     nfl_data_source = TgfpNfl(week_no=tgfp.current_week())
     logger.info("Got a final for the game, updating team records, then exiting run flow")
-    _update_team_records(TGFP(tgfp), nfl_data_source)
+    _update_team_records(tgfp, nfl_data_source)
 
 
 def update_game(tgfp_nfl_game_id: str) -> bool:
@@ -70,6 +70,9 @@ def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
     logger = get_run_logger()
     nfl_game = nfl_data_source.find_game(game_id=tgfp_game.tgfp_nfl_game_id)
     if nfl_game is None:
+        logger.warning(
+            "nfl game is none updating scores, this might happen once when the last game is done"
+        )
         return True  # Finished updating scores
     if not nfl_game.is_pregame:
         if tgfp_game.home_team_score != int(nfl_game.total_home_points) or \
