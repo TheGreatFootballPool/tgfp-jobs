@@ -4,7 +4,7 @@ import datetime
 from typing import Optional, List
 import logging
 import arrow
-import hikari
+import discord
 from prefect import flow, get_run_logger
 from tgfp_lib import TGFP, TGFPPlayer, TGFPGame
 
@@ -27,6 +27,10 @@ def nag_the_players():
     """ Nag the players that didn't do their picks """
     logger = get_run_logger()
     config = get_config()
+    intents = discord.Intents.default()
+    intents.message_content = True
+    client = discord.Client(intents=intents)
+
 
     bot: hikari.GatewayBot = hikari.GatewayBot(
         token=config.DISCORD_AUTH_TOKEN,

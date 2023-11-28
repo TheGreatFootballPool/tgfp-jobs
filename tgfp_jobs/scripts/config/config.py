@@ -22,11 +22,12 @@ class Config:
     DISCORD_REDIRECT_URI: str = helper.get_variable('discord_redirect_uri')
     DISCORD_AUTH_TOKEN: str = helper.get_secret('discord-auth-token')
     DISCORD_GUILD_NAME: str = helper.get_variable('discord_guild_name')
-    BACKUP_DIR = helper.get_variable('backup_dir')
-    SECRET_KEY = helper.get_secret('web-secret-key')
-    LISTMONK_AUTH_HASH = helper.get_variable('listmonk_auth_hash')
-    LISTMONK_LIST_ID = helper.get_variable('listmonk_list_id')
-    LISTMONK_API_URL = helper.get_variable('listmonk_api_url')
+    DISCORD_NAG_BOT_CHANNEL_ID: int = int(helper.get_variable('discord_nag_bot_channel_id'))
+    BACKUP_DIR: str = helper.get_variable('backup_dir')
+    SECRET_KEY: str = helper.get_secret('web-secret-key')
+    LISTMONK_AUTH_HASH: str = helper.get_variable('listmonk_auth_hash')
+    LISTMONK_LIST_ID: int = int(helper.get_variable('listmonk_list_id'))
+    LISTMONK_API_URL: str = helper.get_variable('listmonk_api_url')
 
 
 def get_config():

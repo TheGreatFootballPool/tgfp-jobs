@@ -9,3 +9,12 @@ services:
     volumes:
       - ./scripts:/app/scripts
       - /tmp:/backup
+  tgfp-bot:
+    image: johnofcamas/tgfp-job-runner
+    container_name: tgfp-bot
+    env_file:
+      - stack.env
+    restart: unless-stopped
+    entrypoint: /app/scripts/entrypoint_bot.sh
+    volumes:
+      - ./scripts:/app/scripts

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# usage: [major, minor, patch] "commit message"
-# Get poetry version
 set -o allexport
 ENVIRONMENT=development
 echo "==== Setting up environment and moving to top level dir  ===="
