@@ -11,5 +11,4 @@ The intent is that each folder will execute one function / job
 2. from the host machine `git pull --rebase`
 3. restart the `tgfp` stack (or optionally only restart the job containers for what you changed)
 
-Project developed with
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
