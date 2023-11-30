@@ -5,16 +5,13 @@ from contextlib import AsyncExitStack
 from typing import List, Sequence, Optional
 
 # pylint: disable=F0401
-import aiomqtt
 import discord
-from discord.ext import commands
 import arrow
-from discord import Member
+import aiomqtt
 from tgfp_lib import TGFP, TGFPGame, TGFPPlayer
 
 from config import get_config
 
-bot=commands.Bot()
 config = get_config()
 
 NAG_CHANNEL = config.DISCORD_NAG_BOT_CHANNEL_ID
@@ -37,7 +34,7 @@ def get_nag_payload(members: Sequence[Member]) -> Optional[str]:
     game_1_start = arrow.get(first_game.start_time)
     delta: datetime.timedelta = game_1_start - arrow.utcnow()
     kickoff_in_minutes: int = round(delta.seconds / 60)
-    member: Member
+    member: discord.Member
     late_players: List[TGFPPlayer] = []
     message: Optional[str] = None
     for member in members:
