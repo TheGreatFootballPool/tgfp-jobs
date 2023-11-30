@@ -26,7 +26,7 @@ def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
     return games[-1]
 
 
-def get_nag_payload(members: Sequence[Member]) -> Optional[str]:
+def get_nag_payload(members: Sequence[discord.Member]) -> Optional[str]:
     """ Gets the embed message to send to the server """
     print("Getting nag payload")
     tgfp = TGFP(config.MONGO_URI)
