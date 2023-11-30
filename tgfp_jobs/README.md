@@ -16,4 +16,9 @@ Add the variables listed in the docker compose file to the Portainer Stack
 
 ## Configure the development environment
 
+### Create or Re-Create the local dev DB
+* Run `dev_create_db.sh`
+### Fire up a local mosquitto broker
+* Run `dev_create_mosquitto.sh`
 1. Open the `tgfp-web` pycharm project and fire up a development stack on localhost
+2. Run 

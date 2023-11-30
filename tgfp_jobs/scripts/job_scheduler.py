@@ -7,7 +7,7 @@ from prefect import flow, get_run_logger
 from prefect.deployments import run_deployment
 from tgfp_lib import TGFPGame
 
-from nag_players import get_first_game_of_the_week
+from bot import get_first_game_of_the_week
 from update_game_score import this_weeks_games
 
 

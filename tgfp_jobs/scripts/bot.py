@@ -1,17 +1,62 @@
 """This example requires the 'message_content' intent."""
 import asyncio
+import datetime
 from contextlib import AsyncExitStack
+from typing import List, Sequence, Optional
 
 # pylint: disable=F0401
 import aiomqtt
 import discord
+from discord.ext import commands
+import arrow
+from discord import Member
+from tgfp_lib import TGFP, TGFPGame, TGFPPlayer
 
 from config import get_config
 
-
+bot=commands.Bot()
 config = get_config()
 
 NAG_CHANNEL = config.DISCORD_NAG_BOT_CHANNEL_ID
+
+
+def get_first_game_of_the_week(tgfp: TGFP = None) -> TGFPGame:
+    """ Returns the 'first' game of the week """
+    if tgfp is None:
+        tgfp = TGFP(config.MONGO_URI)
+    games: List[TGFPGame] = tgfp.find_games(week_no=tgfp.current_week())
+    games.sort(key=lambda x: x.start_time, reverse=True)
+    return games[-1]
+
+
+def get_nag_payload(members: Sequence[Member]) -> Optional[str]:
+    """ Gets the embed message to send to the server """
+    print("Getting nag payload")
+    tgfp = TGFP(config.MONGO_URI)
+    first_game: TGFPGame = get_first_game_of_the_week(tgfp)
+    game_1_start = arrow.get(first_game.start_time)
+    delta: datetime.timedelta = game_1_start - arrow.utcnow()
+    kickoff_in_minutes: int = round(delta.seconds / 60)
+    member: Member
+    late_players: List[TGFPPlayer] = []
+    message: Optional[str] = None
+    for member in members:
+        if not member.bot:
+            player: TGFPPlayer = tgfp.find_players(discord_id=member.id)[0]
+            if player.active and not player.this_weeks_picks():
+                late_players.append(player)
+
+    if late_players:
+        message = "This is the TGFP NagBot with a friendly reminder to the following:\n"
+        for player in late_players:
+            message += f"• <@{player.discord_id}>\n"
+        message += "\nYou still need to enter your picks."
+        message += " Go to https://tgfp.us/picks and get 'em in!"
+        message += f"\nKickoff of first game is in {kickoff_in_minutes} minutes!"
+    else:
+        if config.ENVIRONMENT == 'development':
+            message = "No players to nag"
+    return message
 
 
 class Bot(discord.Client):
@@ -19,11 +64,6 @@ class Bot(discord.Client):
     def __init__(self, *, mqtt_client, intents, **options) -> None:
         super().__init__(intents=intents, **options)
         self.mqtt_client: aiomqtt.Client = mqtt_client
-
-    @staticmethod
-    async def on_ready():
-        """ On Ready """
-        print("I am ready!")
 
     async def setup_hook(self) -> None:
         """ Setup hook """
@@ -41,20 +81,10 @@ class Bot(discord.Client):
             async for message in messages:
                 if message.topic.matches("tgfp-bot/nag-bot"):
                     channel: discord.TextChannel = self.get_channel(NAG_CHANNEL)
-                    await channel.send(f"Content from MQTT: {message.payload}")
-
-    async def on_message(self, message: discord.Message):
-        """ On Message """
-        if message.author.bot:
-            return
-
-        asyncio.create_task(
-            message.reply(f'User {message.author.mention} said: "{message.clean_content}"')
-        )
-        # noinspection PyTypeChecker
-        asyncio.create_task(
-            self.mqtt_client.publish("tgfp-bot/nag-bot", payload=message.content)
-        )
+                    my_guild: discord.Guild = self.get_guild(config.DISCORD_GUILD_ID)
+                    payload: Optional[str] = get_nag_payload(my_guild.members)
+                    if payload:
+                        await channel.send(payload)
 
 
 async def main():
@@ -62,12 +92,11 @@ async def main():
     token = config.DISCORD_AUTH_TOKEN
 
     async with AsyncExitStack() as astack:
-        mqtt_client = await astack.enter_async_context(aiomqtt.Client("goshdarnedserver.lan"))
-
+        mqtt_client = await astack.enter_async_context(aiomqtt.Client(config.MQTT_HOST))
         intents = discord.Intents.default()
         intents.message_content = True
+        intents.members = True
         bot = await astack.enter_async_context(Bot(mqtt_client=mqtt_client, intents=intents))
-
         await bot.start(token)
 
 
