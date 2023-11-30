@@ -1,0 +1,45 @@
+services:
+  tgfp-run-jobs:
+    image: johnofcamas/tgfp-job-runner
+    container_name: tgfp-run-jobs
+    env_file:
+      - stack.env
+    restart: unless-stopped
+    entrypoint: /app/scripts/entrypoint.sh
+    volumes:
+      - ./scripts:/app/scripts
+      - /tmp:/backup
+  tgfp-bot:
+    image: johnofcamas/tgfp-job-runner
+    container_name: tgfp-bot
+    env_file:
+      - stack.env
+    restart: unless-stopped
+    network_mode: bridge
+    entrypoint: /app/scripts/entrypoint_bot.sh
+    volumes:
+      - .:/app/scripts
+  tgfp-mongodb:
+    image: mongo:6
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=tgfp
+      - MONGO_INITDB_ROOT_PASSWORD=development
+    restart: unless-stopped
+    container_name: tgfp-mongodb
+    hostname: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./db:/data/db
+  tgfp-mqtt:
+    image: toke/mosquitto
+    network_mode: bridge
+    container_name: tgfp-mqtt
+    expose:
+      - 1883
+    ports:
+      - 1883:1883
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
