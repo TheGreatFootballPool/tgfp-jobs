@@ -67,13 +67,13 @@ create_mqtt() {
   docker compose up -d tgfp-mqtt
 }
 
-create_tgfp_bot() {
+create_tgfp_nag_bot() {
   echo "=== Creating the TGFP Bot ==="
-  if [ "$( docker ps --filter 'name=tgfp-bot' --quiet)" ]; then
-    echo "previous old tgfp-bot container exists, removing"
-    docker rm --force tgfp-bot
+  if [ "$( docker ps --filter 'name=tgfp-nag-bot' --quiet)" ]; then
+    echo "previous old tgfp-nag-bot container exists, removing"
+    docker rm --force tgfp-nag-bot
   fi
-  docker compose up -d tgfp-bot
+  docker compose up -d tgfp-nag-bot
 }
 
 # Create and start the DB
@@ -114,8 +114,8 @@ else
 fi
 
 # Fire up the bot
-if [ "$( docker container inspect -f '{{.State.Running}}' tgfp-bot )" = "true" ]; then
-  echo "* I found a running tgfp-bot container."
+if [ "$( docker container inspect -f '{{.State.Running}}' tgfp-nag-bot )" = "true" ]; then
+  echo "* I found a running tgfp-nag-bot container."
   read -n1 -p "Recreate it [Y/N]: " recreate
   if [[ $recreate == "Y" || $recreate == "y" ]] ; then
     echo ""

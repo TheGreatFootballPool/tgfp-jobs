@@ -44,10 +44,10 @@ async def do_i_care(ctx: lightbulb.Context) -> None:
 @bot.command
 @lightbulb.option(
     "help_topic",
-    description="Get help for the various TGFP Bot commands",
+    description="Get help for the various TGFP NagBot commands",
     choices=['all', 'do_i_care', 'pick_detail']
 )
-@lightbulb.command("help", description="TGFP Bot Command Help")
+@lightbulb.command("help", description="TGFP NagBot Command Help")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def give_help(ctx: lightbulb.Context) -> None:
     """ Provides help for slash commands """

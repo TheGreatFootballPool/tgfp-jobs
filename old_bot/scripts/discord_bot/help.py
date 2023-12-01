@@ -5,7 +5,7 @@ import hikari
 def get_help(command) -> hikari.Embed:
     """ Retrieves hikari embed for help """
     help_embed: hikari.Embed = hikari.Embed(
-        title="TGFP Bot Command Help",
+        title="TGFP NagBot Command Help",
         description="You can type `/help [command]` to get specific help \
             for one command, or just `/help all` for all commands",
         color="#ffdc00"
@@ -28,7 +28,7 @@ def add_all_commands_to_embed(embed: hikari.Embed):
 
 def add_do_i_care_command_to_embed(embed: hikari.Embed, add_description_to_field=False):
     """ Add the 'do I care' command to the help embed """
-    title: str = "TGFP Bot Help for `/do_i_care`"
+    title: str = "TGFP NagBot Help for `/do_i_care`"
     description: str = "> _Gives each game a 'star' rating based on how \
            many people picked *differently* than you!_"
     field_description = ""
@@ -52,7 +52,7 @@ def add_do_i_care_command_to_embed(embed: hikari.Embed, add_description_to_field
 
 def add_pick_detail_command_to_embed(embed: hikari.Embed, add_description_to_field=False):
     """ Add the 'do I care' command to the help embed """
-    title: str = "TGFP Bot Help for `/pick_detail`"
+    title: str = "TGFP NagBot Help for `/pick_detail`"
     description: str = "> _Gives a tremendous amount of detail for each of your picks for the week_"
     field_description = ""
     if not add_description_to_field:

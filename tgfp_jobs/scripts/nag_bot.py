@@ -56,8 +56,8 @@ def get_nag_payload(members: Sequence[discord.Member]) -> Optional[str]:
     return message
 
 
-class Bot(discord.Client):
-    """ TGFP Bot """
+class NagBot(discord.Client):
+    """ TGFP NagBot """
     def __init__(self, *, mqtt_client, intents, **options) -> None:
         super().__init__(intents=intents, **options)
         self.mqtt_client: aiomqtt.Client = mqtt_client
@@ -93,7 +93,7 @@ async def main():
         intents = discord.Intents.default()
         intents.message_content = True
         intents.members = True
-        bot = await astack.enter_async_context(Bot(mqtt_client=mqtt_client, intents=intents))
+        bot = await astack.enter_async_context(NagBot(mqtt_client=mqtt_client, intents=intents))
         await bot.start(token)
 
 

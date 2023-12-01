@@ -3,4 +3,4 @@
 #
 docker rm --force tgfp-mongodb
 docker rm --force tgfp-mqtt
-docker rm --force tgfp-bot
+docker rm --force tgfp-nag-bot
