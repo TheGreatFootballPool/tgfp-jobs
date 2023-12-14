@@ -16,6 +16,7 @@ op inject -f -i $SCRIPTS_DIR/op.env -o $SCRIPTS_DIR/stack.env
 source $SCRIPTS_DIR/stack.env
 set +o allexport
 
+
 # get current machine's IP address
 echo "=== Grabbing IP Address and updating prefect variable ==="
 IP_ADDRESS=`ipconfig getifaddr en0`
@@ -51,6 +52,7 @@ create_mongo_db() {
 
 restore_mongo_db_data() {
   echo "=== Resetting the DB from production data ==="
+  MONGODB_PROD_PASSWORD=`python prefect_fetch.py mongo-root-password-production`
   docker exec tgfp-mongodb \
      /usr/bin/mongodump --username tgfp --password $MONGODB_PROD_PASSWORD --host='goshdarnedserver.lan:27017'
   docker exec tgfp-mongodb rm -rf dump/admin
@@ -76,6 +78,10 @@ create_tgfp_nag_bot() {
   docker compose up -d tgfp-nag-bot
 }
 
+read -n1 -p "Just create stack.env?" justenv
+if [[ $justenv == "Y" || $justenv == "y" ]] ; then
+  exit
+fi
 # Create and start the DB
 # Reset the data in the DB
 if [ "$( docker container inspect -f '{{.State.Running}}' tgfp-mongodb )" = "true" ]; then
@@ -119,11 +125,11 @@ if [ "$( docker container inspect -f '{{.State.Running}}' tgfp-nag-bot )" = "tru
   read -n1 -p "Recreate it [Y/N]: " recreate
   if [[ $recreate == "Y" || $recreate == "y" ]] ; then
     echo ""
-    create_tgfp_bot
+    create_tgfp_nag_bot
   else
     printf "\nOK, Not recreating\n\n"
   fi
 else
-  create_tgfp_bot
+  create_tgfp_nag_bot
 fi
 

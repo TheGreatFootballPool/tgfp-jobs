@@ -93,7 +93,7 @@ async def main():
         intents = discord.Intents.default()
         intents.message_content = True
         intents.members = True
-        bot = await astack.enter_async_context(NagBot(mqtt_client=mqtt_client, intents=intents))
+        bot: NagBot = await astack.enter_async_context(NagBot(mqtt_client=mqtt_client, intents=intents))
         await bot.start(token)
 
 

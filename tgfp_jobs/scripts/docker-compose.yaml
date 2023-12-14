@@ -19,6 +19,16 @@ services:
     entrypoint: /app/scripts/entrypoint_nag_bot.sh
     volumes:
       - .:/app/scripts
+  tgfp-command-bot:
+    image: johnofcamas/tgfp-job-runner
+    container_name: tgfp-command-bot
+    env_file:
+      - stack.env
+    restart: unless-stopped
+    network_mode: bridge
+    entrypoint: /app/scripts/entrypoint_cmd_bot.sh
+    volumes:
+      - .:/app/scripts
   tgfp-mongodb:
     image: mongo:6
     environment:

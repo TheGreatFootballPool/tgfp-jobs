@@ -6,3 +6,4 @@ init-hook='import sys;
   sys.path.append("tgfp_jobs");
   sys.path.append("tgfp_jobs/scripts/prefect_helpers");
           '
+disable=C0114, C0115, C0116, R0903
