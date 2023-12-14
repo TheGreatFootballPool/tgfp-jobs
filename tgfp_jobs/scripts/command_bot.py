@@ -23,7 +23,7 @@ class GameView(discord.ui.View):
     )
     async def select_game(self, interaction: discord.Interaction, select_item: discord.ui.Select):
         self.answer = select_item.values[0]
-        await interaction.response.send_message(embed=self.get_embed(self.answer), ephemeral=True)  # noqa
+        await interaction.response.send_message(embed=self.get_embed(self.answer))  # noqa
 
     def set_options(self):
         options: List[discord.SelectOption] = []
@@ -134,7 +134,7 @@ def run():
         view = GameView()
         view.set_options()
         await ctx.message.delete()
-        await ctx.send(view=view, ephemeral=True)
+        await ctx.send(view=view)
 
     bot.run(token=config.DISCORD_AUTH_TOKEN)
 
