@@ -1,7 +1,6 @@
 """ Sample discord bot """
 from typing import List
 from datetime import datetime
-import matplotlib.pyplot as plt
 
 import pytz
 from tgfp_nfl import TgfpNfl, TgfpNflGame
