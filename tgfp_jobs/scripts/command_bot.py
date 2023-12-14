@@ -133,7 +133,6 @@ def run():
     async def game(ctx):
         view = GameView()
         view.set_options()
-        await ctx.message.delete()
         await ctx.send(view=view)
 
     bot.run(token=config.DISCORD_AUTH_TOKEN)
