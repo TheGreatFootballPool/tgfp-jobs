@@ -1,6 +1,7 @@
 """ Sample discord bot """
 from typing import List
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 import pytz
 from tgfp_nfl import TgfpNfl, TgfpNflGame
@@ -23,7 +24,7 @@ class GameView(discord.ui.View):
     )
     async def select_game(self, interaction: discord.Interaction, select_item: discord.ui.Select):
         self.answer = select_item.values[0]
-        await interaction.response.send_message(embed=self.get_embed(self.answer))  # noqa
+        await interaction.response.send_message(embed=self.get_embed(self.answer), ephemeral=True)  # noqa
 
     def set_options(self):
         options: List[discord.SelectOption] = []
@@ -57,14 +58,16 @@ class GameView(discord.ui.View):
         espn_nfl: TgfpNfl = TgfpNfl(self.tgfp.current_week())
         espn_game: TgfpNflGame = espn_nfl.find_game(tgfp_game.tgfp_nfl_game_id)
         predicted_pt_diff, predicted_winner = espn_game.predicted_winning_diff_team
-        description_header: str = ("Below is some data to help you make a decision.\n  "
-                                   "You can compare the vegas betting line against ESPNs "
-                                   "predicted score\n"
-                                   "\n"
-                                   "**FPI**:\n"
-                                   "> Football Power Index that measures team's true strength on "
-                                   "net points scale; expected point margin vs average opponent on "
-                                   "neutral field.")
+        description_header: str = ('Below is some data to help you make a decision.\n  '
+                                   'You can compare the vegas betting line against ESPNs '
+                                   'predicted score\n'
+                                   '> **Warning**: From what I can tell the ESPN predicted'
+                                   ' score does not take into account injuries.'
+                                   '\n'
+                                   '**FPI**:\n'
+                                   '> Football Power Index that measures team\'s true strength on '
+                                   'net points scale; expected point margin vs average opponent on '
+                                   'neutral field.')
 
         embed = discord.Embed(title=tgfp_game.extra_info['description'],
                               description=f"{description_header}\n\n"
@@ -79,9 +82,9 @@ class GameView(discord.ui.View):
                                           f"{espn_game.home_team_fpi}\n"
                                           f"> **{espn_game.away_team.long_name} FPI**: "
                                           f"{espn_game.away_team_fpi}\n"
-                                          f"> **{espn_game.home_team.long_name} Win %**: "
+                                          f"> **{espn_game.home_team.long_name} Chance Win %**: "
                                           f"{espn_game.home_team_predicted_win_pct}\n"
-                                          f"> **{espn_game.away_team.long_name} Win %**: "
+                                          f"> **{espn_game.away_team.long_name} Chance Win %**: "
                                           f"{espn_game.away_team_predicted_win_pct}\n",
                                           # f"> **NFL Game ID**: {espn_game.event_id}\n"
                               colour=0x00b0f4
@@ -94,6 +97,23 @@ class GameView(discord.ui.View):
         # embed.set_footer(text="ESPN Event ID",
         #                  icon_url="https://slate.dan.onl/slate.png")
         return embed
+
+    # @staticmethod
+    # def get_matchup_chart(espn_game: TgfpNflGame, tgfp_game: TGFPGame) -> str:
+    #     home_team_name = espn_game.home_team.long_name
+    #     labels = home_team_name, espn_game.away_team.long_name
+    #     size_of_groups = [espn_game.home_team_predicted_win_pct, espn_game.away_team_predicted_win_pct]
+    #
+    #     # Create a donut
+    #     plt.pie(size_of_groups, labels=labels, autopct='%1.1f')
+    #
+    #     # add a circle at the center to transform it in a donut chart
+    #     my_circle = plt.Circle((0, 0), 0.85, color='white')
+    #     p = plt.gcf()
+    #     p.gca().add_artist(my_circle)
+    #     filename = f"{espn_game.event_id}-pct-win.png"
+    #     plt.savefig(filename)
+    #     return filename
 
 
 def run():
@@ -114,7 +134,8 @@ def run():
     async def game(ctx):
         view = GameView()
         view.set_options()
-        await ctx.send(view=view)
+        await ctx.message.delete()
+        await ctx.send(view=view, ephemeral=True)
 
     bot.run(token=config.DISCORD_AUTH_TOKEN)
 
