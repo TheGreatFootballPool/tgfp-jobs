@@ -64,7 +64,7 @@ class NagBot(discord.Client):
 
     async def setup_hook(self) -> None:
         """ Setup hook """
-        asyncio.create_task(self.subscriber())
+        await asyncio.create_task(self.subscriber())
 
     async def subscriber(self):
         """ Subscriber """
@@ -73,7 +73,7 @@ class NagBot(discord.Client):
         await self.mqtt_client.subscribe("tgfp-bot/#")
 
         print("Started listening to messages from MQTT...")
-        async with self.mqtt_client.messages() as messages:
+        async with self.mqtt_client.messages as messages:
             message: aiomqtt.client.Message
             async for message in messages:
                 if message.topic.matches("tgfp-bot/nag-bot"):
@@ -93,7 +93,9 @@ async def main():
         intents = discord.Intents.default()
         intents.message_content = True
         intents.members = True
-        bot: NagBot = await astack.enter_async_context(NagBot(mqtt_client=mqtt_client, intents=intents))
+        bot: NagBot = await astack.enter_async_context(
+            NagBot(mqtt_client=mqtt_client, intents=intents)
+        )
         await bot.start(token)
 
 

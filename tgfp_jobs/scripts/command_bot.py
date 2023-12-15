@@ -55,7 +55,7 @@ class GameView(discord.ui.View):
         timestamp = int(datetime.timestamp(utc_time))
         favorite_team: TGFPTeam = self.tgfp.find_teams(tgfp_game.favorite_team_id)[0]
         espn_nfl: TgfpNfl = TgfpNfl(self.tgfp.current_week())
-        espn_game: TgfpNflGame = espn_nfl.find_game(tgfp_game.tgfp_nfl_game_id)
+        espn_game: TgfpNflGame = espn_nfl.find_game(nfl_game_id=tgfp_game.tgfp_nfl_game_id)
         predicted_pt_diff, predicted_winner = espn_game.predicted_winning_diff_team
         description_header: str = ('Below is some data to help you make a decision.\n  '
                                    'You can compare the vegas betting line against ESPNs '

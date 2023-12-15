@@ -68,7 +68,7 @@ def _update_scores(nfl_data_source, tgfp_game: TGFPGame) -> bool:
     @return: True if game is final, otherwise, false
     """
     logger = get_run_logger()
-    nfl_game = nfl_data_source.find_game(game_id=tgfp_game.tgfp_nfl_game_id)
+    nfl_game = nfl_data_source.find_game(nfl_game_id=tgfp_game.tgfp_nfl_game_id)
     if nfl_game is None:
         logger.warning(
             "nfl game is none updating scores, this might happen once when the last game is done"
