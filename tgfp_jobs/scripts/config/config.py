@@ -29,6 +29,7 @@ class Config:
     DISCORD_GUILD_NAME: str = helper.get_variable('discord_guild_name')
     DISCORD_GUILD_ID: int = int(helper.get_variable('discord_guild_id'))
     DISCORD_NAG_BOT_CHANNEL_ID: int = int(helper.get_variable('discord_nag_bot_channel_id'))
+    DISCORD_BOT_CHAT_CHANNEL_ID: int = int(helper.get_variable('discord_bot_chat_channel_id'))
     BACKUP_DIR: str = helper.get_variable('backup_dir')
     SECRET_KEY: str = helper.get_secret('web-secret-key')
     LISTMONK_AUTH_HASH: str = helper.get_variable('listmonk_auth_hash')
