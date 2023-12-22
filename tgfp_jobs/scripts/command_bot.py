@@ -18,6 +18,7 @@ config = get_config()
 
 class GameCommand:
     """ Holds all the information for the game pick command """
+
     def __init__(self):
         self.tgfp: TGFP = TGFP(config.MONGO_URI)
         self._games_values: Optional[Tuple[List, List]] = None
@@ -98,7 +99,6 @@ def run():
     @bot.event
     async def on_ready():
         print(f"User: {bot.user} (ID: {bot.user.id})")
-
         bot.tree.copy_global_to(guild=guild_id)
         await bot.tree.sync(guild=guild_id)
 
