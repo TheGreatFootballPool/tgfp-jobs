@@ -1,55 +1,42 @@
 """ Sample discord bot """
-from typing import List
+# pylint: disable=F0401
+from typing import List, Tuple, Optional
 from datetime import datetime
 
+from donut import get_matchup_chart
 import pytz
 from tgfp_nfl import TgfpNfl, TgfpNflGame
 
-# pylint: disable=F0401
 from config import get_config
 import discord
 from discord.ext import commands
+from discord import app_commands
 from tgfp_lib import TGFP, TGFPGame, TGFPTeam
 
 config = get_config()
 
 
-class GameView(discord.ui.View):
-    answer = None
-    tgfp: TGFP = TGFP(config.MONGO_URI)
+class GameCommand:
+    """ Holds all the information for the game pick command """
+    def __init__(self):
+        self.tgfp: TGFP = TGFP(config.MONGO_URI)
+        self._games_values: Optional[Tuple[List, List]] = None
 
-    @discord.ui.select(
-        placeholder="What game do you want to analyze"
-    )
-    async def select_game(self, interaction: discord.Interaction, select_item: discord.ui.Select):
-        self.answer = select_item.values[0]
-        await interaction.response.send_message(embed=self.get_embed(self.answer))  # noqa
+    @property
+    def games_values(self) -> Tuple[List, List]:
+        """ Get all games and values for the week """
+        if self._games_values is None:
+            games: List = []
+            values: List = []
+            for game in self.tgfp.find_games(week_no=self.tgfp.current_week()):
+                if game.is_pregame:
+                    games.append(game.extra_info['description'])
+                    values.append(game.tgfp_nfl_game_id)
+            self._games_values = games, values
 
-    def set_options(self):
-        options: List[discord.SelectOption] = []
-        game: TGFPGame
+        return self._games_values
 
-        index: int = 1
-        for game in self.tgfp.find_games(week_no=self.tgfp.current_week()):
-            kickoff: str = game.pacific_start_time.strftime("%a, %d %b %Y %I:%M%p")
-            options.append(
-                discord.SelectOption(
-                    label=game.extra_info['description'],
-                    description=f"Kickoff: {kickoff} (Pacific Time)",
-                    value=game.tgfp_nfl_game_id
-                )
-            )
-            index += 1
-        if len(options) == 0:
-            options.append(
-                discord.SelectOption(
-                    label="Picks page not ready yet",
-                    value="0"
-                )
-            )
-        self.select_game.options = options
-
-    def get_embed(self, tgfp_nfl_game_id: str) -> discord.Embed:
+    def get_embed(self, tgfp_nfl_game_id: str) -> Tuple[discord.Embed, discord.File]:
         tgfp_game: TGFPGame = self.tgfp.find_games(tgfp_nfl_game_id=tgfp_nfl_game_id)[0]
         utc_time: datetime = tgfp_game.start_time.replace(tzinfo=pytz.UTC)
         timestamp = int(datetime.timestamp(utc_time))
@@ -57,6 +44,9 @@ class GameView(discord.ui.View):
         espn_nfl: TgfpNfl = TgfpNfl(self.tgfp.current_week())
         espn_game: TgfpNflGame = espn_nfl.find_game(nfl_game_id=tgfp_game.tgfp_nfl_game_id)
         predicted_pt_diff, predicted_winner = espn_game.predicted_winning_diff_team
+        home_color: str = espn_game.home_team.color
+        if espn_game.favored_team:
+            home_color = espn_game.favored_team.color
         description_header: str = ('Below is some data to help you make a decision.\n  '
                                    'You can compare the vegas betting line against ESPNs '
                                    'predicted score\n'
@@ -80,39 +70,21 @@ class GameView(discord.ui.View):
                                           f"> **{espn_game.home_team.long_name} FPI**: "
                                           f"{espn_game.home_team_fpi}\n"
                                           f"> **{espn_game.away_team.long_name} FPI**: "
-                                          f"{espn_game.away_team_fpi}\n"
-                                          f"> **{espn_game.home_team.long_name} Chance Win %**: "
-                                          f"{espn_game.home_team_predicted_win_pct}\n"
-                                          f"> **{espn_game.away_team.long_name} Chance Win %**: "
-                                          f"{espn_game.away_team_predicted_win_pct}\n",
-                                          # f"> **NFL Game ID**: {espn_game.event_id}\n"
-                              colour=0x00b0f4
+                                          f"{espn_game.away_team_fpi}\n",
+                              colour=discord.Colour.from_str(f"#{home_color}")
                               )
-
-        # embed.set_image(url="https://cubedhuang.com/images/alex-knight-unsplash.webp")
+        filename = get_matchup_chart(espn_game)
+        file = discord.File(filename)
+        embed.set_image(url=f"attachment://{filename}")
         #
         # embed.set_thumbnail(url="https://dan.onl/images/emptysong.jpg")
         #
         # embed.set_footer(text="ESPN Event ID",
         #                  icon_url="https://slate.dan.onl/slate.png")
-        return embed
+        return embed, file
 
-    # @staticmethod
-    # def get_matchup_chart(espn_game: TgfpNflGame, tgfp_game: TGFPGame) -> str:
-    #     home_team_name = espn_game.home_team.long_name
-    #     labels = home_team_name, espn_game.away_team.long_name
-    #     size_of_groups = [espn_game.home_team_predicted_win_pct, espn_game.away_team_predicted_win_pct]
-    #
-    #     # Create a donut
-    #     plt.pie(size_of_groups, labels=labels, autopct='%1.1f')
-    #
-    #     # add a circle at the center to transform it in a donut chart
-    #     my_circle = plt.Circle((0, 0), 0.85, color='white')
-    #     p = plt.gcf()
-    #     p.gca().add_artist(my_circle)
-    #     filename = f"{espn_game.event_id}-pct-win.png"
-    #     plt.savefig(filename)
-    #     return filename
+    def reset(self):
+        self._games_values = None
 
 
 def run():
@@ -121,6 +93,7 @@ def run():
 
     bot = commands.Bot(command_prefix="!", intents=intents)
     guild_id: discord.Object = discord.Object(id=config.DISCORD_GUILD_ID)
+    game_command: GameCommand = GameCommand()
 
     @bot.event
     async def on_ready():
@@ -129,11 +102,24 @@ def run():
         bot.tree.copy_global_to(guild=guild_id)
         await bot.tree.sync(guild=guild_id)
 
-    @bot.command()
-    async def game(ctx):
-        view = GameView()
-        view.set_options()
-        await ctx.send(view=view)
+    async def game_autocomplete(
+            _: discord.Interaction,
+            current: str
+    ) -> List[app_commands.Choice[str]]:
+        data = []
+        games, values = game_command.games_values
+        for index, game_choice in enumerate(games):
+            if current.lower() in game_choice.lower():
+                data.append(app_commands.Choice(name=games[index], value=values[index]))
+        return data
+
+    @bot.tree.command()
+    @app_commands.autocomplete(picked_game=game_autocomplete)
+    async def game(interaction: discord.Interaction, picked_game: str):
+        game_command.reset()
+        await interaction.response.defer(thinking=True, ephemeral=True)  # noqa
+        embed, file = game_command.get_embed(picked_game)
+        await interaction.followup.send(embed=embed, file=file)  # noqa
 
     bot.run(token=config.DISCORD_AUTH_TOKEN)
 
