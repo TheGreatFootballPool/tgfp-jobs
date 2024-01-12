@@ -1,4 +1,4 @@
-# tgfp
+# tgfp-jobs
 Repository containing all scripts / jobs / healthchecks, etc.. for The Great Football Pool
 
 each top level folder will contain a docker compose file (to be deployed to my portainer instance) 
