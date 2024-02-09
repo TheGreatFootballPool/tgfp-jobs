@@ -1,20 +1,20 @@
 [tool.poetry]
 name = "tgfp"
-version = "11.4.0"
+version = "11.4.1"
 description = "Scripts to help with the running of The Great Football Pool"
 authors = ["John Sturgeon <john.sturgeon@me.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4"
-tgfp-lib = "^2.2.2"
-tgfp-nfl = "^6.1.0"
+tgfp-lib = "^2.7.2"
+tgfp-nfl = "^6.2.0"
 arrow = "^1.2.3"
 sentry-sdk = "^1.9.8"
 pylint = "^3.0.2"
 prefect = "^2.13.1"
 greenlet = "^3.0.0"
-httpx = "^0.25.0"
+httpx = "^0.26.0"
 pytest = "^7.4.3"
 discord-py = "^2.3.2"
 aiomqtt = "^1.2.1"
